@@ -23,7 +23,7 @@ export default async function sitemap() {
   let productRoutes = [];
   try {
     const [products] = await db.query(
-      'SELECT id, updated_at FROM products WHERE is_deleted = 0'
+      'SELECT id, created_at FROM products WHERE is_deleted = 0'
     );
     productRoutes = (products || []).map((product) => ({
       url: `${baseUrl}/products/${product.id}`,
