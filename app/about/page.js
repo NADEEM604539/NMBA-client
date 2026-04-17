@@ -2,6 +2,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AboutPageClient from "./AboutPageClient";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: "About NMBA Luxe Wear | Premium Fashion Brand Pakistan",
   description: "Discover NMBA Luxe Wear's mission to deliver premium, stylish, and affordable luxury clothing. Learn about our commitment to quality fabrics, contemporary designs, and customer satisfaction.",
