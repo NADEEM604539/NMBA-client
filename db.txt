@@ -1,0 +1,167 @@
+drop database nmba;
+CREATE DATABASE nmba;
+USE nmba;
+
+CREATE TABLE admin_emails (
+  email VARCHAR(255) UNIQUE NOT NULL
+);
+INSERT INTO admin_emails(email) values('ndm604539@gmail.com');
+
+-- 1. Roles
+CREATE TABLE roles (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  role_name ENUM('admin','customer') UNIQUE NOT NULL
+);
+
+-- 2. Users
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  role_id INT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (role_id) REFERENCES roles(id)
+);
+
+-- 3. Categories
+CREATE TABLE categories (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE,
+  description TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 4. Products (NMBA LUXE WEAR)
+CREATE TABLE products (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(150) NOT NULL,
+  description TEXT,
+  price DECIMAL(10,2) NOT NULL,
+  image_url_1 TEXT,
+  image_url_2 TEXT,
+  quantity INT NOT NULL DEFAULT 0,
+  category_id INT,
+  deal BOOLEAN DEFAULT FALSE,
+  is_deleted BOOLEAN DEFAULT FALSE,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
+);
+
+
+-- 6. Cart Items
+CREATE TABLE cart_items (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  product_id INT NOT NULL,
+  quantity INT NOT NULL DEFAULT 1,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+-- 7. Orders
+CREATE TABLE orders (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  total_price DECIMAL(10,2) NOT NULL,
+  status ENUM('pending','processing','delivered','cancelled') DEFAULT 'pending',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- 8. Order Items
+CREATE TABLE order_items (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT NOT NULL,
+  product_id INT NOT NULL,
+  quantity INT NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+-- 9. Payments
+CREATE TABLE payments (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT NOT NULL,
+  contact varchar(15),
+  address text,
+  payment_method VARCHAR(50),
+  status ENUM('success','failed') DEFAULT 'success',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+);
+
+-- 10. Product Reviews
+CREATE TABLE reviews (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  product_id INT NOT NULL,
+  user_id INT NOT NULL,
+  rating INT CHECK (rating BETWEEN 1 AND 5),
+  comment TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+	
+-- 11. Special Reviews
+CREATE TABLE special_reviews (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  order_id INT NOT NULL,
+  rating TINYINT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+  comment TEXT,
+  approved BOOLEAN DEFAULT FALSE,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+  INDEX (user_id)
+); 
+
+-- 12. Chat (Customer - Admin)
+CREATE TABLE chats (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  sender_id INT NOT NULL,
+  receiver_id INT NOT NULL,
+  message TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+
+
+-- ---------- SAMPLE DATA ----------
+
+INSERT INTO roles (id, role_name) VALUES
+  (1,'admin'),
+  (2,'customer');
+
+INSERT INTO users (id, name, email, role_id) VALUES
+  (1,'Admin User','ndm604539@gmail.com',1),
+  (2,'Customer One','ullahasmut310@gmail.com',2),
+  (3,'Customer Two','cust2@herbaloils.com',2);
+
+INSERT INTO categories (id, name, description) VALUES
+  (1,'Mens Shirts','High quality formal and casual shirts'),
+  (2,'Womens Dresses','Elegant dresses for all occasions'),
+  (3,'Accessories','Bags, belts, and other accessories');
+
+INSERT INTO products (id, name, description, price, image_url_1, image_url_2, quantity, category_id, deal) VALUES
+  (1,'Premium Cotton Shirt','100% organic cotton, breathable fabric',1500.00,'https://example.com/shirt1.jpg','https://example.com/shirt1-back.jpg',78,1,TRUE),
+  (2,'Summer Dress','Light and comfortable summer collection',2500.00,'https://example.com/dress1.jpg','https://example.com/dress1-alt.jpg',61,2,FALSE),
+  (3,'Leather Belt','Premium leather belt, adjustable',800.00,'https://example.com/belt1.jpg','https://example.com/belt1-detail.jpg',75,3,FALSE);
+
+INSERT INTO reviews (product_id, user_id, rating, comment) VALUES
+  (1,2,5,'Excellent quality shirt, perfect fit!'),
+  (2,3,4,'Beautiful dress, great value for money.');
+
+INSERT INTO chats (sender_id, receiver_id, message) VALUES
+  (2,1,'Hello admin, is the premium shirt available in size L?'),
+  (1,2,'Yes, we have size L in stock.'),
+  (3,1,'Can you recommend a dress for a summer party?');
+  
+  
+  
+  
+
+
+
