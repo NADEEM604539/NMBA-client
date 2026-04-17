@@ -2,6 +2,8 @@ import db from "@/lib/db";
 import Navbar from "@/components/Navbar";
 import ProductsPageClient from "./ProductsPageClient";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: "Shop Premium Shirts & Luxury Wear | NMBA Luxe Wear",
   description: "Browse our exclusive collection of premium shirts, designer clothing, and luxury garments. High-quality fabrics, contemporary designs, and affordable luxury fashion.",
