@@ -19,6 +19,21 @@ export default async function sitemap() {
     }
   ];
 
+  // Fetch product routes
+  let productRoutes = [];
+  try {
+    const [products] = await db.query(
+      'SELECT id, updated_at FROM products WHERE is_deleted = 0'
+    );
+    productRoutes = (products || []).map((product) => ({
+      url: `${baseUrl}/products/${product.id}`,
+      lastModified: product.updated_at || new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    }));
+  } catch (error) {
+    console.error('Error fetching products for sitemap:', error);
+  }
 
   return [...staticRoutes, ...productRoutes];
 }
