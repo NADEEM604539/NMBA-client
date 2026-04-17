@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: "My Orders | Afia's Herbal Oil",
   description: "View and track your orders.",

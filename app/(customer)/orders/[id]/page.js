@@ -4,6 +4,8 @@ import { getOrderDetailsForCurrentUser } from "../actions";
 import OrderItemCard from "@/components/OrderItemCard";
 import ReviewForm from "@/components/ReviewForm";
 
+export const dynamic = 'force-dynamic';
+
 export default async function OrderDetails({ params }) {
   let order;
   let errorType = null;
