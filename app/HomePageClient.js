@@ -9,10 +9,10 @@ import ProductCard from "@/components/ProductCard";
 // Each item has a primary + secondary image for the hover crossfade.
 const SIGNATURE_ROSTER = [
   {
-    id: "signature-shirt",
-    name: "PEHNO Signature Shirt",
-    image1: "/signature_shirt.jpeg",
-    image2: "/pehno2.jpeg",
+    id: "signature-waistcoat",
+    name: "PEHNO Signature Waistcoat",
+    image1: "/weist_coat.jpeg",
+    image2: "/weist_coat2.jpeg",
   },
   {
     id: "essential-kurta",
@@ -27,18 +27,18 @@ const SIGNATURE_ROSTER = [
     image2: "/pehno4.jpeg",
   },
   {
-    id: "signature-waistcoat",
-    name: "PEHNO Signature Waistcoat",
-    image1: "/weist_coat.jpeg",
-    image2: "/weist_coat2.jpeg",
+    id: "signature-shirt",
+    name: "PEHNO Signature Shirt",
+    image1: "/signature_shirt.jpeg",
+    image2: "/pehno2.jpeg",
   },
 ];
 
 const CATEGORY_GRID = [
-  { label: "Shirts", category: "Signature Shirts", image: "/signature_shirt.jpeg" },
+  { label: "Waistcoats", category: "Waistcoats", image: "/weist_coat.jpeg" },
   { label: "Kurtas", category: "Suits & Kurtas", image: "/shalwar_kameez.jpeg" },
   { label: "Trousers", category: "Tailored Trousers", image: "/tailored_trouser.jpeg" },
-  { label: "Waistcoats", category: "Waistcoats", image: "/weist_coat.jpeg" },
+  { label: "Shirts", category: "Signature Shirts", image: "/signature_shirt.jpeg" },
 ];
 
 export default function HomePageClient({ initialProducts, initialReviews }) {
@@ -106,9 +106,9 @@ export default function HomePageClient({ initialProducts, initialReviews }) {
     <div className="min-h-screen font-sans bg-pehno-offwhite text-pehno-black">
 
       {/* B. Hero Section — full screen */}
-<section className="relative w-full h-[146vh] min-h-[640px] overflow-hidden">
+      <section className="relative w-full h-[143vh] min-h-[640px] overflow-hidden">
         <Image
-          src="/logo2.jpeg"
+          src="/pehno2.jpeg"
           alt="Model wearing PEHNO"
           fill
           priority
@@ -379,7 +379,7 @@ export default function HomePageClient({ initialProducts, initialReviews }) {
           )}
 
           <div className="mt-16 pt-10 border-t border-pehno-ivory/10">
-            <p className="text-3xl font-serif text-pehno-ivory uppercase tracking-[0.3em]">PEHNO</p>
+            <p className="text-3xl font-serif text-pehno-ivory uppercase tracking-[0.3em]">PEHNO By Sajeel Nawaz</p>
             <p className="mt-2 text-pehno-ivory/60 italic font-light">&ldquo;wear your identity&rdquo;</p>
           </div>
         </div>
