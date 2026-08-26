@@ -9,17 +9,17 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export const metadata = {
-  title: "NMBA Luxe Wear | Premium Shirts & Designer Clothing Pakistan",
+  title: "PEHNO | Wear Your Identity",
   description:
-    "Shop premium luxury shirts, designer clothing, and exclusive garments in Pakistan. High-quality fabrics, contemporary designs, and affordable luxury fashion for men and women.",
+    "PEHNO — wear your identity. Timeless pieces, refined silhouettes, made for those who do not follow the ordinary. Discover PEHNO's first collection.",
   keywords: [
-    "luxury shirts", "designer clothing", "premium fashion", "casual wear",
-    "formal shirts", "luxury garments", "Pakistan fashion", "exclusive designs",
-    "quality clothing", "affordable luxury", "contemporary fashion"
+    "PEHNO", "luxury shirts", "designer clothing", "premium fashion",
+    "signature shirt", "essential kurta", "tailored trouser", "signature waistcoat",
+    "Pakistan fashion", "wear your identity"
   ],
   openGraph: {
-    title: "NMBA Luxe Wear | Premium Shirts & Designer Clothing Pakistan",
-    description: "Discover our collection of premium shirts and designer clothing. Crafted with finest fabrics and contemporary designs for the modern style-conscious individual.",
+    title: "PEHNO | Wear Your Identity",
+    description: "Timeless pieces. Refined silhouettes. Made for those who do not follow the ordinary. Discover PEHNO.",
     type: "website",
     locale: "en_PK",
   },
@@ -28,14 +28,47 @@ export const metadata = {
 async function fetchData() {
   try {
     // Fetch latest 6 products (optimized query with LIMIT)
-    const [products] = await db.query(
-      "SELECT id, name, description, price, image_url_1, image_url_2, quantity, category_id, deal, created_at FROM products WHERE deal = 0 AND is_deleted = 0 ORDER BY created_at DESC LIMIT 8"
-    );
-
-    // Fetch latest 3 deals (optimized query with LIMIT)
-    const [deals] = await db.query(
-      "SELECT id, name, description, price, image_url_1, image_url_2, quantity, category_id, deal, created_at FROM products WHERE deal = 1 AND is_deleted = 0 ORDER BY created_at DESC LIMIT 3"
-    );
+const [products] = await db.query(
+  `WITH RankedProducts AS (
+      SELECT 
+          p.id, 
+          p.name, 
+          p.description, 
+          p.price, 
+          p.image_url_1, 
+          p.image_url_2, 
+          p.quantity, 
+          c.name AS category_name, 
+          p.deal, 
+          p.created_at,
+          ROW_NUMBER() OVER (PARTITION BY p.category_id ORDER BY p.created_at DESC) as row_num
+      FROM 
+          products p
+      LEFT JOIN 
+          categories c ON p.category_id = c.id
+      WHERE 
+          p.deal = 0 AND 
+          p.is_deleted = 0
+  )
+  SELECT 
+      id, 
+      name, 
+      description, 
+      price, 
+      image_url_1, 
+      image_url_2, 
+      quantity, 
+      category_name, 
+      deal, 
+      created_at
+  FROM 
+      RankedProducts
+  WHERE 
+      row_num <= 8
+  ORDER BY 
+      category_name ASC, 
+      created_at DESC;`
+);
 
     // Query last 6 approved special reviews
     const [reviews] = await db.query(`
@@ -54,7 +87,6 @@ async function fetchData() {
 
     return {
       products: Array.isArray(products) ? products : [],
-      deals: Array.isArray(deals) ? deals : [],
       reviews: Array.isArray(reviews) ? reviews : [],
     };
   } catch (error) {
@@ -64,13 +96,13 @@ async function fetchData() {
 }
 
 export default async function Home() {
-  const { products, deals, reviews } = await fetchData();
+  const { products, reviews } = await fetchData();
 
 
   return (
     <div>
       <Navbar />
-      <HomePageClient initialProducts={products} initialDeals={deals} initialReviews={reviews} />
+      <HomePageClient initialProducts={products} initialReviews={reviews} />
     </div>
   );
 }

@@ -1,15 +1,29 @@
 "use client"
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Search, Filter, X, ChevronDown } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 
 export default function ProductsPageClient({ initialProducts, categories }) {
+  const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [showDeals, setShowDeals] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [showFilters, setShowFilters] = useState(false);
+
+  // Sync selected category from the ?category= URL query param (matches category name, case-insensitive)
+  useEffect(() => {
+    const categoryParam = searchParams.get("category");
+    if (categoryParam) {
+      const matched = categories.find(
+        (c) => c.name.toLowerCase() === categoryParam.toLowerCase()
+      );
+      if (matched) {
+        setSelectedCategory(String(matched.id));
+      }
+    }
+  }, [searchParams, categories]);
 
   // Advanced filtering and sorting
   const filteredProducts = useMemo(() => {
@@ -28,13 +42,6 @@ export default function ProductsPageClient({ initialProducts, categories }) {
     // Filter by category
     if (selectedCategory !== "all") {
       result = result.filter((p) => p.category_id === parseInt(selectedCategory));
-    }
-
-    // Filter by deals
-    if (showDeals === "deals") {
-      result = result.filter((p) => p.deal === 1);
-    } else if (showDeals === "regular") {
-      result = result.filter((p) => p.deal === 0);
     }
 
     // Sort
@@ -59,16 +66,15 @@ export default function ProductsPageClient({ initialProducts, categories }) {
     }
 
     return result;
-  }, [initialProducts, searchQuery, selectedCategory, showDeals, sortBy]);
+  }, [initialProducts, searchQuery, selectedCategory, sortBy]);
 
   const handleClearFilters = () => {
     setSearchQuery("");
     setSelectedCategory("all");
-    setShowDeals("all");
     setSortBy("newest");
   };
 
-  const activeFilters = [searchQuery, selectedCategory !== "all", showDeals !== "all"].filter(Boolean).length;
+  const activeFilters = [searchQuery, selectedCategory !== "all"].filter(Boolean).length;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F0E6D2] via-[#E8DCC8] to-[#DFD0B8] text-[#3D2817]">
@@ -116,7 +122,6 @@ export default function ProductsPageClient({ initialProducts, categories }) {
               </h2>
               <p className="text-[#6B4F2F] mt-2 text-sm font-medium">
                 {selectedCategory !== "all" && `Category: ${categories.find(c => c.id === parseInt(selectedCategory))?.name}`}
-                {showDeals !== "all" && `${selectedCategory !== "all" ? " • " : ""}${showDeals === "deals" ? "Special Deals" : "Regular Products"}`}
               </p>
             </div>
 
@@ -167,32 +172,6 @@ export default function ProductsPageClient({ initialProducts, categories }) {
                   </select>
                 </div>
 
-                {/* Product Type Filter */}
-                <div className="mb-6 pb-6 border-b-2 border-[#F0F0F0]">
-                  <label className="text-xs font-bold text-[#102C26] block mb-3 uppercase tracking-wide">Type</label>
-                  <div className="space-y-3">
-                    {[
-                      { value: "all", label: "All Products" },
-                      { value: "regular", label: "Regular Products" },
-                      { value: "deals", label: "Special Deals" },
-                    ].map((option) => (
-                      <label key={option.value} className="flex items-center gap-3 cursor-pointer group">
-                        <input
-                          type="radio"
-                          name="deals"
-                          value={option.value}
-                          checked={showDeals === option.value}
-                          onChange={(e) => setShowDeals(e.target.value)}
-                          className="w-5 h-5 accent-[#1a4d42] cursor-pointer"
-                        />
-                        <span className="text-[#3D2817] group-hover:text-[#1a4d42] transition-colors font-medium">
-                          {option.label}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
                 {/* Sort Filter */}
                 <div>
                   <label className="text-xs font-bold text-[#102C26] block mb-3 uppercase tracking-wide">Sort By</label>
@@ -241,30 +220,6 @@ export default function ProductsPageClient({ initialProducts, categories }) {
                           </option>
                         ))}
                       </select>
-                    </div>
-
-                    {/* Type */}
-                    <div>
-                      <label className="text-sm font-bold text-[#102C26] block mb-3 uppercase tracking-wide">Type</label>
-                      <div className="space-y-2">
-                        {[
-                          { value: "all", label: "All Products" },
-                          { value: "regular", label: "Regular Products" },
-                          { value: "deals", label: "Special Deals" },
-                        ].map((option) => (
-                          <label key={option.value} className="flex items-center gap-2">
-                            <input
-                              type="radio"
-                              name="deals-mobile"
-                              value={option.value}
-                              checked={showDeals === option.value}
-                              onChange={(e) => setShowDeals(e.target.value)}
-                              className="w-4 h-4 accent-[#1a4d42]"
-                            />
-                            <span className="text-[#3D2817] font-medium">{option.label}</span>
-                          </label>
-                        ))}
-                      </div>
                     </div>
 
                     {/* Sort */}

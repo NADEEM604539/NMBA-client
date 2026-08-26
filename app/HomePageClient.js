@@ -2,14 +2,53 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search } from "lucide-react";
+import { Search, Mail, Plus, X } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 
-export default function HomePageClient({ initialProducts, initialDeals, initialReviews }) {
+// Fixed "first collection" roster shown while the real catalogue fills up.
+// Each item has a primary + secondary image for the hover crossfade.
+const SIGNATURE_ROSTER = [
+  {
+    id: "signature-shirt",
+    name: "PEHNO Signature Shirt",
+    image1: "/signature_shirt.jpeg",
+    image2: "/pehno2.jpeg",
+  },
+  {
+    id: "essential-kurta",
+    name: "PEHNO Essential Kurta",
+    image1: "/shalwar_kameez.jpeg",
+    image2: "/pehno3.jpeg",
+  },
+  {
+    id: "tailored-trouser",
+    name: "PEHNO Tailored Trouser",
+    image1: "/tailored_trouser.jpeg",
+    image2: "/pehno4.jpeg",
+  },
+  {
+    id: "signature-waistcoat",
+    name: "PEHNO Signature Waistcoat",
+    image1: "/weist_coat.jpeg",
+    image2: "/weist_coat2.jpeg",
+  },
+];
+
+const CATEGORY_GRID = [
+  { label: "Shirts", category: "Signature Shirts", image: "/signature_shirt.jpeg" },
+  { label: "Kurtas", category: "Suits & Kurtas", image: "/shalwar_kameez.jpeg" },
+  { label: "Trousers", category: "Tailored Trousers", image: "/tailored_trouser.jpeg" },
+  { label: "Waistcoats", category: "Waistcoats", image: "/weist_coat.jpeg" },
+];
+
+export default function HomePageClient({ initialProducts, initialReviews }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredProducts, setFilteredProducts] = useState(initialProducts);
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+  const [notifyProduct, setNotifyProduct] = useState(null);
 
-  // Handle search
+  // Handle global search
   useEffect(() => {
     if (searchQuery.trim() === "") {
       setFilteredProducts(initialProducts);
@@ -22,164 +61,283 @@ export default function HomePageClient({ initialProducts, initialDeals, initialR
     }
   }, [searchQuery, initialProducts]);
 
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    if (email.trim()) {
+      setSubscribed(true);
+      setEmail("");
+    }
+  };
+
+  // Define your 5 categories here. 
+  // EDIT THE `matchString` TO MATCH THE EXACT CATEGORY STRINGS IN YOUR DATABASE.
+  const categories = [
+    {
+      id: "suits-kurtas",
+      title: "Suits & Kurtas",
+      description: "Elegant traditional and modern ensembles for the perfect gentleman.",
+      matchString: "Suits & Kurtas", // <-- Edit this string
+      image: "/shalwar_kameez.jpeg" // <-- Add your image to public/images/
+    },
+    {
+      id: "waistcoats",
+      title: "Waistcoats",
+      description: "Premium tailored waistcoats to elevate any traditional outfit.",
+      matchString: "Waistcoats", // <-- Edit this string
+      image: "/weist_coat.jpeg"
+    },
+    {
+      id: "signature-shirts",
+      title: "Signature Shirts",
+      description: "Crisp, comfortable, and expertly crafted shirts.",
+      matchString: "Signature Shirts", // <-- Edit this string
+      image: "/signature_shirt.jpeg"
+    },
+    {
+      id: "tailored-trousers",
+      title: "Tailored Trousers",
+      description: "Perfectly fitted trousers designed for both comfort and class.",
+      matchString: "Tailored Trousers", // <-- Edit this string
+      image: "/tailored_trouser.jpeg"
+    }
+  ];
+
   return (
-    <div className="min-h-screen font-sans bg-gradient-to-b from-[#F0E6D2] via-[#E8DCC8] to-[#DFD0B8] text-[#3D2817]">
+    <div className="min-h-screen font-sans bg-pehno-offwhite text-pehno-black">
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden pt-20 pb-16">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#FFF2E1] via-[#FAE8D0] to-[#F5DCC3] opacity-90" />
-        
-        <div className="relative z-10 mx-auto px-6 py-10 text-center max-w-5xl">
-          {/* Centered Logo Image */}
-          <div className="relative flex items-center justify-center mb-8">
-            <Image
-              src="/logo.jpg"
-              alt="Brand Logo"
-              width={224}
-              height={224}
-              className="rounded-full shadow-2xl hover:scale-105 transition-transform duration-300"
-              priority
-            />
-          </div>
+      {/* B. Hero Section — full screen */}
+<section className="relative w-full h-[150vh] min-h-[640px] overflow-hidden">
+        <Image
+          src="/logo2.jpeg"
+          alt="Model wearing PEHNO"
+          fill
+          priority
+          className="object-cover object-top"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70" />
 
-          <h1 className="mt-6 text-4xl md:text-5xl font-bold text-[#102C26] drop-shadow-lg uppercase tracking-wider">
-            Premium Luxury Wear
+        {/* Note: I added 'pt-32' or adjusted margins if you want to push the text up, 
+            but keeping it 'justify-center' will perfectly center it within the 150vh space */}
+        <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
+          <h1 className="text-6xl md:text-8xl font-serif font-bold text-pehno-ivory tracking-[0.2em] uppercase">
+            PEHNO
           </h1>
-          <p className="mt-4 text-xl md:text-2xl text-[#6B4F2F] opacity-90 italic font-light">
-            Contemporary designs crafted with the finest fabrics
+          <p className="mt-6 text-lg md:text-2xl text-pehno-offwhite italic font-light tracking-wide">
+            wear your identity
           </p>
-          
 
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-5">
-            <Link href="#products" className="bg-gradient-to-r from-[#1a4d42] to-[#0d3a33] text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-2xl hover:scale-105 transition-transform duration-300">
-              Shop Now
+          <div className="mt-12 flex flex-col items-center justify-center gap-4">
+            <Link
+              href="#collections"
+              className="border border-pehno-ivory text-pehno-ivory px-10 py-4 font-medium uppercase tracking-[0.2em] text-sm hover:bg-pehno-ivory hover:text-pehno-black transition-colors duration-300"
+            >
+              Explore Collection
             </Link>
-            <Link href="/chat" className="border-2 border-[#1a4d42] text-[#1a4d42] px-8 py-3 rounded-full font-semibold hover:bg-[#1a4d42]/10 transition-colors duration-300">
-              Get Style Advice
-            </Link>
+            <span className="text-pehno-ivory/70 text-xs tracking-[0.3em] uppercase">Coming soon ✔</span>
+          </div>
+        </div>
+      </section>
+      {/* C. The Collection Banner */}
+      <section className="relative py-28 px-6 md:px-16 bg-pehno-black overflow-hidden">
+        <div className="absolute inset-0 opacity-30">
+          <Image src="/coming_soon1.jpeg" alt="" fill className="object-cover blur-md scale-110" />
+        </div>
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl md:text-5xl font-serif font-light text-pehno-ivory leading-snug">
+            Timeless pieces. Refined silhouettes.
+          </h2>
+          <p className="mt-4 text-lg md:text-xl text-pehno-ivory/70 italic">
+            Made for those who do not follow the ordinary.
+          </p>
+        </div>
+      </section>
+
+      {/* D. Products Display Section — signature roster with hover swap + Notify Me */}
+      <section className="py-24 px-6 md:px-16 bg-pehno-offwhite">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-14">
+            <span className="text-pehno-navy text-xs tracking-[0.4em] uppercase">The First Collection</span>
+            <h2 className="mt-3 text-4xl md:text-5xl font-serif font-light text-pehno-black uppercase tracking-wide">
+              Discover PEHNO
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {SIGNATURE_ROSTER.map((product) => (
+              <SignatureCard key={product.id} product={product} onNotify={() => setNotifyProduct(product)} />
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="px-6 md:px-16 py-16 bg-gradient-to-r from-[#D9CDB5] to-[#CAC1A0]">
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <FeatureCard title="Premium Fabrics" subtitle="Finest quality materials for comfort and durability" />
-          <FeatureCard title="Contemporary Design" subtitle="Trendy, modern styles crafted for the fashion-forward" />
-          <FeatureCard title="Affordable Luxury" subtitle="Premium quality at prices that make sense" />
+      {/* E. Category Grid */}
+      <section className="bg-pehno-offwhite pb-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4">
+          {CATEGORY_GRID.map((block) => (
+            <Link
+              key={block.label}
+              href={`/products?category=${block.category}`}
+              className="group relative h-64 md:h-96 overflow-hidden block"
+            >
+              <Image
+                src={block.image}
+                alt={block.label}
+                fill
+                className="object-cover group-hover:scale-110 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors duration-500 flex items-center justify-center">
+                <span className="text-pehno-ivory text-lg md:text-2xl font-serif tracking-[0.3em] uppercase">
+                  {block.label}
+                </span>
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
 
-      {/* Regular Products Section */}
-      <section id="products" className="py-20 px-6 md:px-16 bg-gradient-to-b from-[#F0E6D2] via-[#E8DCC8] to-[#DFD0B8]">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-[#102C26] mb-3 uppercase tracking-tight">
-              Our Exclusive Collection
-            </h2>
-            <p className="text-[#6B4F2F] text-lg italic font-light">
-              Handpicked premium shirts and garments for every occasion
-            </p>
-          {/* Search Bar */}
-          <div className="mt-12 max-w-2xl mx-auto">
+      {/* Global Search Bar */}
+      <section id="collections" className="pt-20 px-6 md:px-16 bg-pehno-offwhite">
+        <div className="max-w-7xl mx-auto text-center mb-12">
+          <span className="text-pehno-navy text-xs tracking-[0.4em] uppercase">Available Now</span>
+          <h2 className="mt-3 text-4xl md:text-5xl font-serif font-light text-pehno-black mb-3 uppercase tracking-wide">
+            Our Collections
+          </h2>
+          <div className="mt-8 max-w-2xl mx-auto">
             <div className="relative flex items-center">
               <input
                 type="text"
-                placeholder="Search for shirts, styles, or brands..."
+                placeholder="Search across all categories..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-6 py-4 rounded-full text-[#3D2817] placeholder-[#1a4d42] border-2 border-[#1a4d42] bg-[#F0F9F7] focus:outline-none focus:border-[#0d3a33] focus:ring-2 focus:ring-[#1a4d42]/30 transition-all duration-300 text-lg"
+                className="w-full px-6 py-4 text-pehno-black placeholder-pehno-charcoal/60 border border-pehno-black/30 bg-white focus:outline-none focus:border-pehno-black focus:ring-1 focus:ring-pehno-black/20 transition-all duration-300 text-lg"
               />
-              <Search className="absolute right-5 w-6 h-6 text-[#1a4d42] pointer-events-none" />
+              <Search className="absolute right-5 w-6 h-6 text-pehno-black pointer-events-none" />
             </div>
-            {searchQuery && (
-              <p className="mt-2 text-[#6B4F2F] text-sm">
-                Found {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''}
-              </p>
-            )}
-          </div>
-          </div>
-          
-          {filteredProducts.length === 0 && (
-            <p className="text-center text-[#A79277] text-lg">No products found matching your search.</p>
-          )}
-
-          {/* 4-Column Responsive Grid with Center Alignment */}
-          <div className="flex justify-center mb-12">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
-              {filteredProducts.map((product) => (
-                <div key={product.id} className="flex justify-center">
-                  <div className="w-full max-w-xs">
-                    <ProductCard product={product} isDeal={false} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Prominent View All Products Button */}
-          <div className="text-center">
-            <Link
-              href="/products"
-              className="inline-block bg-gradient-to-r from-[#1a4d42] to-[#0d3a33] text-white px-10 py-4 rounded-full font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 uppercase tracking-wider"
-            >
-              View All Products →
-            </Link>
           </div>
         </div>
       </section>
 
-      {/* Deals Section - Special Styling */}
-      <section id="deals" className="py-20 px-6 md:px-16 bg-gradient-to-b from-[#CAC1A0] to-[#D9CDB5]">
-        <div className="relative mb-12">
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-4 mb-3">
-              <span className="text-4xl">✨</span>
-              <h2 className="text-4xl md:text-5xl font-bold text-[#102C26]">Limited Time Offers</h2>
-              <span className="text-4xl">✨</span>
-            </div>
-            <p className="text-center text-[#6B4F2F] font-semibold uppercase tracking-wider text-lg">Exclusive deals on our premium collection</p>
+      {/* Render The 5 Category Sections dynamically */}
+      <div className="bg-pehno-offwhite pb-20">
+        {categories.map((cat, index) => {
+          // Filter products based on the search query AND the specific category string
+          // Correct
+          const categoryProducts = filteredProducts.filter(
+            (p) => p.category_name === cat.matchString
+          );
+          // Alternating layout: even indexes have image on left, odd on right
+          const isEven = index % 2 === 0;
+
+          return (
+            <section key={cat.id} className="py-16 px-6 md:px-16 border-b border-pehno-black/10 last:border-0">
+              <div className="max-w-7xl mx-auto">
+                <div className={`flex flex-col lg:flex-row gap-12 items-center ${isEven ? '' : 'lg:flex-row-reverse'}`}>
+
+                  {/* Category Image & Info (Side 1) */}
+                  <div className="w-full lg:w-1/3 text-center lg:text-left">
+                    <div className="relative w-full h-80 lg:h-96 overflow-hidden shadow-xl mb-6">
+                      {/* Note: Ensure these images exist in your public folder, or change the paths */}
+                      <Image
+                        src={cat.image}
+                        alt={cat.title}
+                        fill
+                        className="object-cover hover:scale-110 transition-transform duration-700"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                      <h3 className="absolute bottom-6 left-6 text-2xl font-serif font-light text-white uppercase tracking-[0.15em] drop-shadow-md">
+                        {cat.title}
+                      </h3>
+                    </div>
+                    <p className="text-pehno-charcoal text-lg italic">{cat.description}</p>
+                    <Link href={`/products?category=${cat.matchString}`} className="mt-4 inline-block text-pehno-black font-semibold uppercase text-sm tracking-[0.15em] hover:underline">
+                      View all {cat.title} &rarr;
+                    </Link>
+                  </div>
+
+                  {/* Products Grid (Side 2) */}
+                  <div className="w-full lg:w-2/3">
+                    {categoryProducts.length > 0 ? (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {categoryProducts.slice(0, 3).map((product) => ( // Displaying top 3 to keep layout clean
+                          <div key={product.id} className="flex justify-center">
+                            <div className="w-full max-w-xs">
+                              <ProductCard product={product} isDeal={false} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="h-full flex items-center justify-center p-12 bg-white border border-dashed border-pehno-black/20">
+                        <p className="text-pehno-charcoal text-lg">No products found in this category right now.</p>
+                      </div>
+                    )}
+                  </div>
+
+                </div>
+              </div>
+            </section>
+          );
+        })}
+      </div>
+
+      {/* F. The PEHNO Story */}
+      <section className="py-24 px-6 md:px-16 bg-pehno-ivory">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+          <div className="relative w-full h-[420px] lg:h-[520px] overflow-hidden shadow-xl order-2 lg:order-1">
+            <Image src="/pehno2.jpeg" alt="The PEHNO Story" fill className="object-cover" />
+          </div>
+          <div className="order-1 lg:order-2">
+            <span className="text-pehno-navy text-xs tracking-[0.4em] uppercase">More than what you wear</span>
+            <h2 className="mt-4 text-4xl md:text-5xl font-serif font-light text-pehno-black uppercase tracking-wide">
+              The PEHNO Story
+            </h2>
+            <p className="mt-6 text-pehno-charcoal text-lg leading-relaxed">
+              PEHNO comes from the simple Urdu word meaning &ldquo;wear.&rdquo; But to us, clothing is more than something you put on.
+            </p>
+            <ul className="mt-6 space-y-2 text-pehno-black text-xl font-serif font-light uppercase tracking-[0.2em]">
+              <li>It is identity.</li>
+              <li>It is presence.</li>
+              <li>It is expression.</li>
+            </ul>
+            <p className="mt-6 text-pehno-charcoal text-lg leading-relaxed italic">
+              PEHNO is created for those who understand that true style does not demand attention. It commands presence.
+            </p>
           </div>
         </div>
+      </section>
 
-        {initialDeals.length === 0 ? (
-          <p className="text-center text-[#A79277] text-lg font-semibold">No deals available at the moment.</p>
-        ) : (
-          <>
-            {/* 3-Column Grid Centered for Deals */}
-            <div className="flex justify-center mb-12">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
-                {initialDeals.map((product) => (
-                  <div key={product.id} className="flex justify-center">
-                    <div className="w-full max-w-xs">
-                      <ProductCard product={product} isDeal={true} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+      {/* G. Luxury Campaign — The PEHNO Standard */}
+      <section className="relative py-32 px-6 md:px-16 bg-pehno-green overflow-hidden">
+        <div className="absolute inset-0">
+          <Image src="/pehno3.jpeg" alt="The PEHNO Standard" fill className="object-cover opacity-20" />
+        </div>
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
+          <span className="text-pehno-ivory/70 text-xs tracking-[0.4em] uppercase">Campaign</span>
+          <h2 className="mt-6 text-4xl md:text-6xl font-serif font-light text-pehno-ivory uppercase tracking-[0.15em]">
+            The PEHNO Standard
+          </h2>
+          <p className="mt-8 text-xl text-pehno-ivory/90 italic font-light">
+            Quiet in appearance. Distinct in presence.
+          </p>
+        </div>
 
-            {/* Prominent View All Products Button */}
-            <div className="text-center">
-              <Link
-                href="/products?deals=deals"
-                className="inline-block bg-gradient-to-r from-[#1a4d42] to-[#0d3a33] text-white px-10 py-4 rounded-full font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 uppercase tracking-wider"
-              >
-                Explore All Deals →
-              </Link>
-            </div>
-          </>
-        )}
+        {/* Brand Philosophy Grid */}
+        <div className="relative z-10 max-w-5xl mx-auto mt-20 grid md:grid-cols-3 gap-12">
+          <PhilosophyCard number="01" title="Craft" description="Thoughtful materials. Precise detail." />
+          <PhilosophyCard number="02" title="Identity" description="Clothing that reflects who you are." />
+          <PhilosophyCard number="03" title="Presence" description="Designed to be noticed without demanding attention." />
+        </div>
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 px-6 md:px-16 bg-gradient-to-b from-[#F0E6D2] via-[#E8DCC8] to-[#DFD0B8] relative overflow-hidden">
+      <section className="py-20 px-6 md:px-16 bg-pehno-offwhite relative overflow-hidden">
         <div className="relative z-10 max-w-6xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#102C26] mb-3 uppercase tracking-tight">
+          <span className="text-pehno-navy text-xs tracking-[0.4em] uppercase">Testimonials</span>
+          <h2 className="mt-4 text-4xl md:text-5xl font-serif font-light text-pehno-black mb-3 uppercase tracking-wide">
             What Our Customers Love
           </h2>
-          <p className="text-[#6B4F2F] mb-12 text-lg italic font-light">
-            Real reviews from style-conscious customers who trust NMBA
+          <p className="text-pehno-charcoal mb-12 text-lg italic font-light">
+            Real reviews from style-conscious customers who trust PEHNO
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -190,151 +348,177 @@ export default function HomePageClient({ initialProducts, initialDeals, initialR
         </div>
       </section>
 
-      {/* About NMBA Section */}
-      <section className="py-20 px-6 md:px-16 bg-gradient-to-b from-[#DFD0B8] to-[#D0C4A0]">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-4xl font-bold text-[#102C26] mb-6">About NMBA Luxe Wear</h2>
-              <p className="text-[#6B4F2F] text-lg leading-relaxed mb-4">
-                Welcome to NMBA Luxe Wear, where premium fashion meets contemporary design. We believe that luxury should be accessible to everyone who appreciates quality and style.
-              </p>
-              <p className="text-[#6B4F2F] text-lg leading-relaxed mb-6">
-                Our carefully curated collection features premium shirts, designer clothing, and exclusive garments crafted from the finest fabrics. Each piece is selected for its exceptional quality, modern aesthetics, and comfort.
-              </p>
-              <Link href="/about" className="inline-block bg-gradient-to-r from-[#1a4d42] to-[#0d3a33] text-white px-8 py-3 rounded-full font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
-                Learn More About Us →
-              </Link>
-            </div>
-            <div className="bg-gradient-to-br from-white via-[#FDF9F3] to-[#F5E6D3] rounded-3xl p-8 border-2 border-[#D9CDB5] shadow-xl">
-              <h3 className="text-2xl font-bold text-[#102C26] mb-6">Why Choose NMBA?</h3>
-              <ul className="space-y-4">
-                <li className="flex gap-4 items-start">
-                  <span className="text-3xl text-[#1a4d42] font-bold flex-shrink-0">✓</span>
-                  <div>
-                    <h4 className="font-bold text-[#102C26] mb-1">Premium Quality</h4>
-                    <p className="text-[#6B4F2F]">Finest fabrics and exceptional craftsmanship in every piece</p>
-                  </div>
-                </li>
-                <li className="flex gap-4 items-start">
-                  <span className="text-3xl text-[#1a4d42] font-bold flex-shrink-0">✓</span>
-                  <div>
-                    <h4 className="font-bold text-[#102C26] mb-1">Contemporary Style</h4>
-                    <p className="text-[#6B4F2F]">Modern designs that match your personality and taste</p>
-                  </div>
-                </li>
-                <li className="flex gap-4 items-start">
-                  <span className="text-3xl text-[#1a4d42] font-bold flex-shrink-0">✓</span>
-                  <div>
-                    <h4 className="font-bold text-[#102C26] mb-1">Affordable Luxury</h4>
-                    <p className="text-[#6B4F2F]">Premium wear at prices that don't compromise your budget</p>
-                  </div>
-                </li>
-                <li className="flex gap-4 items-start">
-                  <span className="text-3xl text-[#1a4d42] font-bold flex-shrink-0">✓</span>
-                  <div>
-                    <h4 className="font-bold text-[#102C26] mb-1">Fast Shipping</h4>
-                    <p className="text-[#6B4F2F]">Quick and reliable delivery across Pakistan</p>
-                  </div>
-                </li>
-              </ul>
-            </div>
+      {/* H. Join The List — Footer newsletter section */}
+      <section className="py-24 px-6 md:px-16 bg-pehno-black text-center">
+        <div className="max-w-2xl mx-auto">
+          <span className="text-pehno-ivory/60 text-xs tracking-[0.4em] uppercase">Private Preview</span>
+          <h2 className="mt-4 text-4xl md:text-5xl font-serif font-light text-pehno-ivory uppercase tracking-wide">
+            Be the First to Know
+          </h2>
+          <p className="mt-6 text-pehno-ivory/70 text-lg font-light">
+            Join the PEHNO list for first collection private previews and launch access.
+          </p>
+
+          {subscribed ? (
+            <p className="mt-10 text-pehno-ivory text-lg italic">Thank you — you&apos;re on the PEHNO list.</p>
+          ) : (
+            <form onSubmit={handleSubscribe} className="mt-10 flex items-center justify-center gap-3 max-w-md mx-auto">
+              <input
+                type="email"
+                required
+                placeholder="enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="flex-1 bg-transparent border-b border-pehno-ivory/40 text-pehno-ivory placeholder-pehno-ivory/40 px-1 py-3 focus:outline-none focus:border-pehno-ivory transition-colors duration-300"
+              />
+              <button
+                type="submit"
+                aria-label="Join"
+                className="text-pehno-ivory border-b border-pehno-ivory/40 hover:border-pehno-ivory pb-3 px-1 transition-colors duration-300 text-xl"
+              >
+                &rarr;
+              </button>
+            </form>
+          )}
+
+          <div className="mt-16 pt-10 border-t border-pehno-ivory/10">
+            <p className="text-3xl font-serif text-pehno-ivory uppercase tracking-[0.3em]">PEHNO</p>
+            <p className="mt-2 text-pehno-ivory/60 italic font-light">&ldquo;wear your identity&rdquo;</p>
           </div>
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="py-20 px-6 md:px-16 bg-gradient-to-b from-[#F0E6D2] via-[#E8DCC8] to-[#DFD0B8]">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-[#102C26] mb-4 text-center uppercase tracking-tight">How It Works</h2>
-          <p className="text-[#6B4F2F] text-center text-lg mb-12 italic font-light">Shop your favorite luxury wear in just 4 easy steps</p>
-          
-          <div className="grid md:grid-cols-4 gap-6">
-            <StepCard step={1} title="Browse" description="Explore our exclusive collection of premium shirts and garments" />
-            <StepCard step={2} title="Add to Cart" description="Select your style, size, and add items to your shopping cart" />
-            <StepCard step={3} title="Checkout" description="Secure payment with multiple payment options available" />
-            <StepCard step={4} title="Enjoy" description="Receive your order and enjoy premium quality wear" />
-          </div>
-        </div>
-      </section>
-
-      {/* Collections Category Section */}
-      <section className="py-20 px-6 md:px-16 bg-gradient-to-b from-[#CAC1A0] to-[#D9CDB5]">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-[#102C26] mb-4 text-center uppercase tracking-tight">Explore Our Collections</h2>
-          <p className="text-[#6B4F2F] text-center text-lg mb-12 italic font-light">Find the perfect piece for every occasion</p>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <CategoryCard title="Casual Shirts" description="Comfortable and stylish casual wear for everyday fashion" icon="👕" />
-            <CategoryCard title="Formal Wear" description="Elegant formal shirts for professional and special occasions" icon="🎩" />
-            <CategoryCard title="Premium Collection" description="Exclusive designer pieces for the fashion connoisseur" icon="✨" />
-          </div>
-        </div>
-      </section>
+      {/* Notify Me Modal */}
+      {notifyProduct && (
+        <NotifyModal product={notifyProduct} onClose={() => setNotifyProduct(null)} />
+      )}
 
       {/* Chat Button */}
-      <button 
-        className="fixed bottom-10 right-10 bg-gradient-to-br from-[#0d3a33] to-[#051f1a] text-white px-6 py-4 rounded-full shadow-2xl hover:scale-110 hover:shadow-3xl transition-all duration-300 animate-bounce text-lg font-semibold z-40"
+      <button
+        className="fixed bottom-10 right-10 bg-pehno-black text-pehno-ivory px-6 py-4 shadow-2xl hover:scale-105 transition-all duration-300 text-sm font-medium uppercase tracking-[0.15em] z-40"
         onClick={() => window.location.href = "/chat"}
       >
-        💬 Style Assistant
+        Style Assistant
       </button>
     </div>
   );
 }
 
-function FeatureCard({ title, subtitle }) {
+function SignatureCard({ product, onNotify }) {
+  const [hover, setHover] = useState(false);
+
   return (
-    <div className="rounded-3xl bg-gradient-to-tr from-white to-[#FDF9F3] p-8 shadow-lg hover:shadow-2xl transition-shadow duration-500 text-center border border-[#D9CDB5] hover:border-[#A79277]">
-      <h3 className="text-2xl font-bold text-[#102C26] mb-1">{title}</h3>
-      <p className="text-[#6B4F2F] text-lg">{subtitle}</p>
+    <div className="group bg-pehno-ivory">
+      <div
+        className="relative aspect-[3/4] w-full overflow-hidden"
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
+        <Image
+          src={product.image1}
+          alt={product.name}
+          fill
+          className={`object-cover transition-opacity duration-500 ${hover ? "opacity-0" : "opacity-100"}`}
+        />
+        <Image
+          src={product.image2}
+          alt={product.name}
+          fill
+          className={`object-cover transition-opacity duration-500 absolute inset-0 ${hover ? "opacity-100" : "opacity-0"}`}
+        />
+
+        <button
+          onClick={onNotify}
+          aria-label={`Notify me about ${product.name}`}
+          className="absolute bottom-4 right-4 w-10 h-10 rounded-full bg-pehno-ivory text-pehno-black flex items-center justify-center shadow-lg hover:bg-pehno-black hover:text-pehno-ivory transition-colors duration-300"
+        >
+          <Plus className="w-5 h-5" />
+        </button>
+      </div>
+
+      <div className="pt-4 text-left">
+        <p className="text-sm md:text-base font-medium text-pehno-black">{product.name}</p>
+        <p className="text-xs text-pehno-charcoal/70 uppercase tracking-[0.15em] mt-1">Coming Soon</p>
+      </div>
+    </div>
+  );
+}
+
+function NotifyModal({ product, onClose }) {
+  const [email, setEmail] = useState("");
+  const [done, setDone] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (email.trim()) setDone(true);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-6" onClick={onClose}>
+      <div
+        className="bg-pehno-ivory max-w-md w-full p-10 relative"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button onClick={onClose} className="absolute top-4 right-4 text-pehno-black hover:opacity-60">
+          <X className="w-5 h-5" />
+        </button>
+
+        {done ? (
+          <div className="text-center py-6">
+            <p className="text-lg font-serif text-pehno-black">You&apos;re on the list.</p>
+            <p className="mt-2 text-sm text-pehno-charcoal">We&apos;ll let you know the moment {product.name} launches.</p>
+          </div>
+        ) : (
+          <>
+            <p className="text-xs tracking-[0.3em] uppercase text-pehno-navy">Notify Me</p>
+            <h3 className="mt-2 text-2xl font-serif text-pehno-black">{product.name}</h3>
+            <p className="mt-2 text-sm text-pehno-charcoal">Join the waitlist for launch access.</p>
+            <form onSubmit={handleSubmit} className="mt-6 flex items-center gap-3">
+              <input
+                type="email"
+                required
+                placeholder="enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="flex-1 bg-transparent border-b border-pehno-black/30 text-pehno-black placeholder-pehno-charcoal/50 px-1 py-2 focus:outline-none focus:border-pehno-black transition-colors duration-300"
+              />
+              <button type="submit" className="text-pehno-black border-b border-pehno-black/30 hover:border-pehno-black pb-2 px-1 text-lg">
+                &rarr;
+              </button>
+            </form>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function PhilosophyCard({ number, title, description }) {
+  return (
+    <div className="text-center px-4">
+      <span className="text-sm text-pehno-ivory/50 tracking-[0.3em]">{number}</span>
+      <h3 className="mt-4 text-2xl font-serif font-light text-pehno-ivory uppercase tracking-[0.2em]">{title}</h3>
+      <p className="mt-4 text-pehno-ivory/70 text-lg">{description}</p>
     </div>
   );
 }
 
 function Testimonial({ quote, name, rating }) {
-  // Helper: render stars based on rating value
   const renderStars = (rating) => {
     const filled = "★".repeat(rating);
     const empty = "☆".repeat(5 - rating);
     return (
-      <span className="text-[#A79277] text-lg">
+      <span className="text-pehno-charcoal/60 text-lg">
         {filled}{empty}
       </span>
     );
   };
 
   return (
-    <div
-      className="bg-gradient-to-tr from-white to-[#FDF9F3] rounded-3xl shadow-lg p-8 text-center border border-[#D9CDB5] hover:scale-105 transform transition-transform duration-500"
-    >
-      <p className="text-[#6B4F2F] mb-4 italic text-lg leading-relaxed">"{quote}"</p>
+    <div className="bg-white shadow-md p-8 text-center border border-pehno-black/10 hover:shadow-xl transition-shadow duration-500">
+      <p className="text-pehno-charcoal mb-4 italic text-lg leading-relaxed">"{quote}"</p>
       <div className="mb-3">{renderStars(rating)}</div>
-      <p className="font-bold text-[#3D2817] text-lg">— {name}</p>
-    </div>
-  );
-}
-
-function StepCard({ step, title, description }) {
-  return (
-    <div className="relative">
-      <div className="bg-white rounded-3xl p-8 text-center border-2 border-[#D9CDB5] hover:border-[#1a4d42] shadow-lg hover:shadow-xl transition-all duration-300 h-full">
-        <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[#1a4d42] to-[#0d3a33] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold shadow-lg">
-          {step}
-        </div>
-        <h3 className="text-2xl font-bold text-[#102C26] mb-3 mt-4">{title}</h3>
-        <p className="text-[#6B4F2F] leading-relaxed">{description}</p>
-      </div>
-    </div>
-  );
-}
-
-function CategoryCard({ title, description, icon }) {
-  return (
-    <div className="bg-gradient-to-br from-white to-[#FDF9F3] rounded-3xl p-10 text-center border-2 border-[#D9CDB5] hover:border-[#1a4d42] shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 cursor-pointer">
-      <div className="text-6xl mb-4">{icon}</div>
-      <h3 className="text-2xl font-bold text-[#102C26] mb-3">{title}</h3>
-      <p className="text-[#6B4F2F] text-lg leading-relaxed">{description}</p>
+      <p className="font-semibold text-pehno-black text-lg uppercase tracking-wide">— {name}</p>
     </div>
   );
 }

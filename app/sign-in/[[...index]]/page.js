@@ -20,7 +20,7 @@ export default function SignInCatchAll() {
           <div className="flex justify-center mb-2 sm:mb-3 md:mb-4">
             <div className="relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full overflow-hidden border-2 border-[#248D76] shadow-lg">
               <Image
-                src="/logo.jpg"
+                src="/logo.jpeg"
                 alt="Afia's Logo"
                 fill
                 className="object-cover"

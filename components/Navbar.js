@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useUser, UserButton } from "@clerk/nextjs";
-import { ShoppingCart, Menu, X, MessageCircle } from "lucide-react";
+import { ShoppingCart, Menu, X, Search, User } from "lucide-react";
 import { useCart } from "@/lib/CartContext";
 
 export default function Navbar() {
@@ -13,149 +13,121 @@ export default function Navbar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { cartCount } = useCart();
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const isHome = pathname === "/";
+  const transparent = isHome && !scrolled;
+
   return (
-    <nav className="sticky top-0 z-50 w-full bg-[#FFF2E1] border-b border-[#D4A574]/30 shadow-xl">
-      {/* Full width container */}
-      <div className="w-full flex items-center justify-between px-4 md:px-6 lg:px-16 py-2">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 md:gap-3 flex-shrink-0">
-          <div className="relative w-10 h-10 md:w-11 md:h-11 rounded-full overflow-hidden border-2 border-[#A79277] shadow-md flex-shrink-0">
-            <Image
-              src="/logo.jpg"
-              alt="NMBA Luxe Wear Logo"
-              fill
-              className="object-cover"
-            />
+    <div className="absolute top-0 z-50 w-full">
+      {/* Announcement Bar */}
+      <div className="w-full bg-pehno-black text-pehno-ivory text-center text-[11px] md:text-xs tracking-[0.15em] uppercase py-2 px-4">
+        Something distinctive is taking shape — Coming soon - PEHNO.
+      </div>
+
+      {/* Navbar */}
+      <nav
+        className={`w-full transition-colors duration-500 border-b ${
+          transparent
+            ? "bg-transparent border-transparent absolute top-8 left-0"
+            : "bg-pehno-black border-pehno-charcoal/40 relative"
+        }`}
+      >
+        <div className="w-full grid grid-cols-3 items-center px-4 md:px-6 lg:px-16 py-4">
+          {/* Left Links (Desktop) */}
+          <div className="hidden md:flex items-center gap-6 lg:gap-8 justify-self-start">
+            <NavLink href="/products?category=new-arrivals" transparent={transparent}>New Arrivals</NavLink>
+            <NavLink href="/products" transparent={transparent}>Collections</NavLink>
           </div>
-          <h1 className="text-xl md:text-3xl font-bold text-[#102C26] tracking-wide whitespace-nowrap">
-            NMBA<span className="text-[#A79277]"> Luxe</span>
-          </h1>
-        </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-2 lg:gap-3 bg-[#102C26] px-2 py-1 rounded-xl border border-[#0A1A15]/40">
-          <NavLink href="/" pathname={pathname} searchParams={searchParams}>Home</NavLink>
-          <NavLink href="/products" pathname={pathname} searchParams={searchParams}>All Products</NavLink>
-          <NavLink href="/products?deals=deals" pathname={pathname} searchParams={searchParams}>Deals</NavLink>
-          <NavLink href="/orders" pathname={pathname} searchParams={searchParams}>Orders</NavLink>
-          <NavLink href="/chat" pathname={pathname} searchParams={searchParams}>Chat</NavLink>
-          <NavLink href="/about" pathname={pathname} searchParams={searchParams}>About</NavLink>
-        </div>
-
-        {/* Right Section */}
-        <div className="flex items-center gap-2 md:gap-3">
-          {/* Mobile Chat */}
-          <Link
-            href="/chat"
-            className="md:hidden p-2 rounded-lg hover:bg-[#A79277]/20 transition flex-shrink-0"
-          >
-            <MessageCircle className="w-5 h-5 md:w-6 md:h-6 text-[#102C26]" />
-          </Link>
-
-          {/* Cart */}
-          <Link
-            href="/cart"
-            className="relative p-2 rounded-lg hover:bg-[#A79277]/20 transition flex-shrink-0"
-          >
-            <ShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-[#102C26]" />
-            {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-[#102C26] text-[#FFF2E1] text-xs font-bold rounded-full px-2 py-0.5 shadow-md">
-                {cartCount}
-              </span>
-            )}
-          </Link>
-
-          {/* Auth */}
-          {isSignedIn ? (
-            <UserButton afterSignOutUrl="/" />
-          ) : (
-            <Link href="/sign-in" className="flex-shrink-0">
-              <button className="px-3 md:px-5 py-2 bg-[#102C26] hover:bg-[#0A1A15] text-[#FFF2E1] font-semibold rounded-lg transition-all duration-200 shadow-md text-sm md:text-base">
-                Sign In
-              </button>
-            </Link>
-          )}
-
-          {/* Mobile Toggle */}
+          {/* Mobile Toggle (Left on mobile) */}
           <button
-            className="md:hidden text-[#102C26] flex-shrink-0"
+            className={`md:hidden justify-self-start ${transparent ? "text-pehno-ivory" : "text-pehno-ivory"}`}
             onClick={() => setOpen(!open)}
           >
-            {open ? <X size={24} /> : <Menu size={24} />}
+            {open ? <X size={22} /> : <Menu size={22} />}
           </button>
+
+          {/* Centered Logo */}
+          <Link href="/" className="justify-self-center flex items-center gap-2">
+            <h1 className="text-2xl md:text-3xl font-serif font-bold text-pehno-ivory tracking-[0.3em] whitespace-nowrap uppercase">
+              PEHNO
+            </h1>
+          </Link>
+
+          {/* Right Icons */}
+          <div className="flex items-center gap-3 md:gap-5 justify-self-end">
+            <Link href="/products" className="hidden sm:inline-flex p-1 hover:opacity-70 transition">
+              <Search className="w-5 h-5 text-pehno-ivory" />
+            </Link>
+
+            {isSignedIn ? (
+              <UserButton afterSignOutUrl="/" />
+            ) : (
+              <Link href="/sign-in" className="p-1 hover:opacity-70 transition">
+                <User className="w-5 h-5 text-pehno-ivory" />
+              </Link>
+            )}
+
+            <Link href="/cart" className="relative p-1 hover:opacity-70 transition">
+              <ShoppingCart className="w-5 h-5 text-pehno-ivory" />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-pehno-ivory text-pehno-black text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+          </div>
         </div>
-      </div>
+
+        {/* Secondary link row (desktop, centered under logo on larger screens) */}
+        <div className="hidden md:flex items-center justify-center gap-8 pb-4 -mt-2">
+          <NavLink href="/about" transparent={transparent}>Our Story</NavLink>
+          <NavLink href="/chat" transparent={transparent}>Contact Us</NavLink>
+          <NavLink href="/orders" transparent={transparent}>Orders</NavLink>
+        </div>
+      </nav>
 
       {/* Mobile Menu */}
       {open && (
-        <div className="md:hidden w-full bg-[#102C26] border-t border-[#0A1A15]/40 px-6 py-6 space-y-3">
-          <MobileLink href="/" setOpen={setOpen} pathname={pathname} searchParams={searchParams}>Home</MobileLink>
-          <MobileLink href="/products" setOpen={setOpen} pathname={pathname} searchParams={searchParams}>All Products</MobileLink>
-          <MobileLink href="/products?deals=deals" setOpen={setOpen} pathname={pathname} searchParams={searchParams}>Deals</MobileLink>
-          <MobileLink href="/orders" setOpen={setOpen} pathname={pathname} searchParams={searchParams}>Orders</MobileLink>
-          <MobileLink href="/about" setOpen={setOpen} pathname={pathname} searchParams={searchParams}>About</MobileLink>
-          <MobileLink href="/chat" setOpen={setOpen} pathname={pathname} searchParams={searchParams}>Chat</MobileLink>
+        <div className="md:hidden w-full bg-pehno-black border-t border-pehno-charcoal/40 px-6 py-6 space-y-3">
+          <MobileLink href="/" setOpen={setOpen}>Home</MobileLink>
+          <MobileLink href="/products?category=new-arrivals" setOpen={setOpen}>New Arrivals</MobileLink>
+          <MobileLink href="/products" setOpen={setOpen}>Collections</MobileLink>
+          <MobileLink href="/about" setOpen={setOpen}>Our Story</MobileLink>
+          <MobileLink href="/chat" setOpen={setOpen}>Contact Us</MobileLink>
+          <MobileLink href="/orders" setOpen={setOpen}>Orders</MobileLink>
         </div>
       )}
-    </nav>
+    </div>
   );
 }
 
-function NavLink({ href, children, pathname, searchParams }) {
-  let isActive = false;
-
-  if (href === "/") {
-    isActive = pathname === "/";
-  } else if (href.includes("?")) {
-    // For URLs with query parameters (like /products?deals=deals)
-    const [path, query] = href.split("?");
-    const currentDealsParam = searchParams.get("deals");
-    isActive = pathname === path && currentDealsParam === "deals";
-  } else {
-    // For regular paths
-    isActive = pathname.startsWith(href) && pathname === href;
-  }
-
+function NavLink({ href, children, transparent }) {
   return (
     <Link
       href={href}
-      className={`px-3 lg:px-5 py-2 lg:py-3 rounded-lg text-sm lg:text-lg font-bold transition-all duration-200 ${
-        isActive
-          ? "bg-[#F7E7CE] text-[#102C26] shadow-md"
-          : "text-[#F7E7CE] hover:bg-[#1A4A42] hover:text-white"
-      }`}
+      className="text-xs lg:text-sm font-medium uppercase tracking-[0.15em] text-pehno-ivory/90 hover:text-pehno-ivory transition-colors duration-200"
     >
       {children}
     </Link>
   );
 }
 
-function MobileLink({ href, children, setOpen, pathname, searchParams }) {
-  let isActive = false;
-
-  if (href === "/") {
-    isActive = pathname === "/";
-  } else if (href.includes("?")) {
-    // For URLs with query parameters (like /products?deals=deals)
-    const [path, query] = href.split("?");
-    const currentDealsParam = searchParams.get("deals");
-    isActive = pathname === path && currentDealsParam === "deals";
-  } else {
-    // For regular paths
-    isActive = pathname.startsWith(href) && pathname === href;
-  }
-
+function MobileLink({ href, children, setOpen }) {
   return (
     <Link
       href={href}
       onClick={() => setOpen(false)}
-      className={`block w-full px-5 py-3 rounded-lg text-lg font-bold transition ${
-        isActive
-          ? "bg-[#F7E7CE] text-[#102C26]"
-          : "text-[#F7E7CE] hover:bg-[#1A4A42] hover:text-white"
-      }`}
+      className="block w-full py-2 text-sm font-medium uppercase tracking-[0.15em] text-pehno-ivory/90 hover:text-pehno-ivory transition"
     >
       {children}
     </Link>

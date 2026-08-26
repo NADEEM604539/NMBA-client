@@ -10,6 +10,15 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-playfair);
+
+  /* PEHNO brand palette */
+  --color-pehno-black: #000000;
+  --color-pehno-charcoal: #36454F;
+  --color-pehno-navy: #000080;
+  --color-pehno-green: #013220;
+  --color-pehno-ivory: #FFFFF0;
+  --color-pehno-offwhite: #FAF9F6;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -17,6 +26,10 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {

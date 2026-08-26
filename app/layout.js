@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import {
@@ -20,36 +20,42 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "900"],
+});
+
 export const metadata = {
   title: {
-    default: "Afia's Herbal Oil | Pure, Natural & Organic Care Products",
-    template: "%s | Afia's Herbal Oil"
+    default: "PEHNO | Wear Your Identity",
+    template: "%s | PEHNO"
   },
-  description: "Rooted in nature and guided by purity, Afia's Herbal Oil offers lovingly crafted hair and skin care products. 100% natural, cold-pressed, and organic oils to bring out your natural radiance.",
-  keywords: ["herbal oil", "organic hair oil", "natural skin care", "cold-pressed oils", "Pakistan", "Afia's herbal", "pure essential oils"],
-  authors: [{ name: "Afia's Herbal Oil" }],
-  creator: "Afia's Herbal Oil",
-  publisher: "Afia's Herbal Oil",
+  description: "PEHNO — wear your identity. Timeless pieces, refined silhouettes, made for those who do not follow the ordinary. Discover PEHNO's first collection, coming soon.",
+  keywords: ["PEHNO", "luxury shirts", "designer clothing", "premium fashion", "signature shirt", "essential kurta", "tailored trouser", "signature waistcoat", "Pakistan fashion", "wear your identity"],
+  authors: [{ name: "PEHNO" }],
+  creator: "PEHNO",
+  publisher: "PEHNO",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://www.afias.pk'), // Replace with actual domain
+  metadataBase: new URL('https://www.pehno.pk'), // Replace with actual domain
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: "Afia's Herbal Oil | Pure, Natural & Organic Care Products",
-    description: "Discover the power of nature with Afia's Herbal Oil. Premium hair and skin care products crafted to restore balance and bring out your natural radiance.",
-    url: 'https://www.afias.pk',
-    siteName: "Afia's Herbal Oil",
+    title: "PEHNO | Wear Your Identity",
+    description: "Timeless pieces. Refined silhouettes. Made for those who do not follow the ordinary. Discover PEHNO.",
+    url: 'https://www.pehno.pk',
+    siteName: "PEHNO",
     images: [
       {
-        url: '/logo.jpg',
+        url: '/logo.jpeg',
         width: 800,
         height: 600,
-        alt: "Afia's Herbal Oil Logo",
+        alt: "PEHNO Logo",
       },
     ],
     locale: 'en_PK',
@@ -57,13 +63,13 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Afia's Herbal Oil | Pure, Natural & Organic Care Products",
-    description: "100% natural, cold-pressed, and organic oils for hair and skin care.",
-    images: ['/logo.jpg'],
+    title: "PEHNO | Wear Your Identity",
+    description: "Timeless pieces. Refined silhouettes. Made for those who do not follow the ordinary.",
+    images: ['/logo.jpeg'],
   },
   icons: {
     icon: '/favicon.ico',
-    apple: '/logo.jpg',
+    apple: '/logo.jpeg',
   },
   verification: {
     google: "aOvx6LD9u_TnyzXI3zqvzubFyTV81TIx_a6BXaUtP1U",
@@ -76,10 +82,10 @@ export default function RootLayout({ children }) {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: "Afia's Herbal Oil",
-    url: 'https://www.afias.pk',
-    logo: 'https://www.afias.pk/logo.jpg',
-    description: "Pure, natural and organic oils for hair, skin and wellness.",
+    name: "PEHNO",
+    url: 'https://www.pehno.pk',
+    logo: 'https://www.pehno.pk/logo.jpeg',
+    description: "PEHNO — wear your identity. Timeless pieces, refined silhouettes, made for those who do not follow the ordinary.",
     sameAs: [
       // Add social media links here
     ],
@@ -106,7 +112,7 @@ export default function RootLayout({ children }) {
             />
           </head>
           <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+            className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased`}
           >
             {children}
             <Footer />
