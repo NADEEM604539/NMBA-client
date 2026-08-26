@@ -5,6 +5,6 @@ export default function robots() {
       allow: ['/', '/about','/products/'],
       disallow: ['/api/', '/sign-in', '/sign-up', '/checkout', '/cart', '/orders/', '/chat'],
     },
-    sitemap: 'https://www.afias.pk/sitemap.xml',
+    sitemap: 'https://www.pheno.pk/sitemap.xml',
   }
 }

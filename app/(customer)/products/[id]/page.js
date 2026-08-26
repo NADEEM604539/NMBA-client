@@ -144,11 +144,11 @@ export default async function ProductPage({ params }) {
       price: product.price,
       priceCurrency: 'PKR',
       availability: product.quantity > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-      url: `https://www.afias.pk/products/${id}`
+      url: `https://www.pehno.pk/products/${id}`
     },
     brand: {
       '@type': 'Brand',
-      name: "Afia's Herbal Oil"
+      name: "Pehno by Sajeel Nawaz"
     }
   };
 

@@ -1,7 +1,7 @@
 import db from "@/lib/db";
 
 export default async function sitemap() {
-  const baseUrl = 'https://www.afias.pk';
+  const baseUrl = 'https://www.pehno.pk';
 
   // Static routes with proper priority and change frequency
   const staticRoutes = [

@@ -19,7 +19,7 @@ export default function Footer() {
             <Link href="https://www.facebook.com/share/1KJrchaFDp/" target="_blank" className="border border-pehno-ivory/30 text-pehno-ivory p-2.5 hover:bg-pehno-ivory hover:text-pehno-black transition-all duration-300">
               <Facebook className="w-4 h-4" />
             </Link>
-            <Link href="https://www.instagram.com/made.byafia?igsh=MWhrdnpzazdzMGV1dQ==" target="_blank" className="border border-pehno-ivory/30 text-pehno-ivory p-2.5 hover:bg-pehno-ivory hover:text-pehno-black transition-all duration-300">
+            <Link href="https://www.instagram.com/made?igsh=MWhrdnpzazdzMGV1dQ==" target="_blank" className="border border-pehno-ivory/30 text-pehno-ivory p-2.5 hover:bg-pehno-ivory hover:text-pehno-black transition-all duration-300">
               <Instagram className="w-4 h-4" />
             </Link>
           </div>

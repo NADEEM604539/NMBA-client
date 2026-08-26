@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: "My Orders | Afia's Herbal Oil",
+  title: "Pehno by Sajeel Nawaz",
   description: "View and track your orders.",
   robots: {
     index: false,

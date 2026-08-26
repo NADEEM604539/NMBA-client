@@ -17,14 +17,14 @@ export default function SignUpCatchAll() {
             <div className="relative w-10 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full overflow-hidden border-2 border-[#248D76] shadow-lg">
               <Image
                 src="/logo.jpeg"
-                alt="Afia's Logo"
+                alt="Pehno Logo"
                 fill
                 className="object-cover"
               />
             </div>
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#102C26] tracking-wide mb-1">
-            Afia<span className="text-[#248D76]">'s</span> Herbal Oils
+           PEHNO<span className="text-[#248D76]"> by</span> Sajeel Nawaz
           </h1>
           <p className="text-xs sm:text-sm md:text-base lg:text-lg text-[#6B4F2F] italic font-light">
             Create your account
