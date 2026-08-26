@@ -2,7 +2,7 @@
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Search, Filter, X, ChevronDown } from "lucide-react";
+import { Search, SlidersHorizontal, X } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 
 export default function ProductsPageClient({ initialProducts, categories }) {
@@ -77,36 +77,37 @@ export default function ProductsPageClient({ initialProducts, categories }) {
   const activeFilters = [searchQuery, selectedCategory !== "all"].filter(Boolean).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#F0E6D2] via-[#E8DCC8] to-[#DFD0B8] text-[#3D2817]">
+    <div className="min-h-screen bg-pehno-offwhite text-pehno-black">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-[#102C26] to-[#1A5F4F] text-white px-6 md:px-16 py-12">
+      <div className="bg-pehno-black text-pehno-ivory px-6 md:px-16 pt-32 pb-16">
         <div className="max-w-7xl mx-auto">
           <Link
             href="/"
-            className="text-[#FFF2E1] hover:text-white font-semibold transition-colors mb-6 inline-block text-sm"
+            className="text-pehno-ivory/70 hover:text-pehno-ivory transition-colors mb-6 inline-block text-xs uppercase tracking-[0.2em]"
           >
-            ← Back to Home
+            &larr; Back to Home
           </Link>
 
-          <div className="mb-8">
-            <h1 className="text-5xl md:text-6xl font-black text-white mb-3 uppercase tracking-wider">
+          <div className="mb-10">
+            <span className="text-pehno-ivory/60 text-xs tracking-[0.4em] uppercase">Collections</span>
+            <h1 className="mt-3 text-5xl md:text-6xl font-serif font-light text-pehno-ivory uppercase tracking-[0.1em]">
               Explore Collections
             </h1>
-            <p className="text-lg text-[#D4E8E5] font-light">
-              Discover our premium selection of luxury shirts and contemporary garments crafted with excellence
+            <p className="mt-4 text-lg text-pehno-ivory/60 font-light max-w-2xl">
+              Discover our full selection of PEHNO pieces — timeless silhouettes crafted with quality fabrics.
             </p>
           </div>
 
           {/* Search Bar */}
-          <div className="relative">
+          <div className="relative max-w-xl">
             <input
               type="text"
               placeholder="Search products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-6 py-4 rounded-full text-[#3D2817] bg-white focus:outline-none focus:ring-4 focus:ring-[#1a4d42]/30 transition-all duration-300 text-base shadow-xl"
+              className="w-full px-6 py-4 text-pehno-black bg-pehno-ivory focus:outline-none focus:ring-1 focus:ring-pehno-ivory/50 transition-all duration-300 text-base"
             />
-              <Search className="absolute right-5 top-4 w-6 h-6 text-[#1a4d42] pointer-events-none" />
+            <Search className="absolute right-5 top-4 w-5 h-5 text-pehno-black/60 pointer-events-none" />
           </div>
         </div>
       </div>
@@ -115,12 +116,12 @@ export default function ProductsPageClient({ initialProducts, categories }) {
       <div className="px-6 md:px-16 py-12">
         <div className="max-w-7xl mx-auto">
           {/* Results Count */}
-          <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="mb-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h2 className="text-3xl font-bold text-[#102C26]">
+              <h2 className="text-2xl font-serif font-light text-pehno-black uppercase tracking-wide">
                 {filteredProducts.length} Product{filteredProducts.length !== 1 ? "s" : ""}
               </h2>
-              <p className="text-[#6B4F2F] mt-2 text-sm font-medium">
+              <p className="text-pehno-charcoal mt-2 text-sm">
                 {selectedCategory !== "all" && `Category: ${categories.find(c => c.id === parseInt(selectedCategory))?.name}`}
               </p>
             </div>
@@ -128,27 +129,27 @@ export default function ProductsPageClient({ initialProducts, categories }) {
             {/* Mobile Filter Toggle */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="lg:hidden bg-white border-2 border-[#1a4d42] text-[#1a4d42] px-5 py-2 rounded-lg font-semibold flex items-center gap-2 hover:bg-[#1a4d42]/10 transition-colors"
+              className="lg:hidden bg-pehno-black text-pehno-ivory px-5 py-3 font-medium uppercase tracking-[0.15em] text-xs flex items-center gap-2 hover:opacity-90 transition-opacity"
             >
-              <Filter className="w-4 h-4" />
+              <SlidersHorizontal className="w-4 h-4" />
               Filters
-              {activeFilters > 0 && <span className="bg-[#1a4d42] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{activeFilters}</span>}
+              {activeFilters > 0 && <span className="bg-pehno-ivory text-pehno-black text-[10px] rounded-full w-4 h-4 flex items-center justify-center">{activeFilters}</span>}
             </button>
           </div>
 
-          <div className="flex gap-6">
+          <div className="flex gap-10">
             {/* Desktop Sidebar Filters */}
-            <div className="hidden lg:block w-64 flex-shrink-0">
-              <div className="bg-gradient-to-br from-white to-[#FDF9F3] rounded-3xl p-6 border-2 border-[#F7E7CE] shadow-xl sticky top-24 hover:shadow-2xl transition-shadow duration-300">
+            <div className="hidden lg:block w-60 flex-shrink-0">
+              <div className="sticky top-32">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-[#102C26] flex items-center gap-2">
-                    <Filter className="w-5 h-5 text-[#1a4d42]" />
+                  <h3 className="text-xs font-semibold text-pehno-black uppercase tracking-[0.2em] flex items-center gap-2">
+                    <SlidersHorizontal className="w-4 h-4" />
                     Filters
                   </h3>
                   {activeFilters > 0 && (
                     <button
                       onClick={handleClearFilters}
-                      className="text-xs text-[#1a4d42] hover:text-[#0d3a33] font-bold transition-colors uppercase tracking-wider"
+                      className="text-[11px] text-pehno-charcoal hover:text-pehno-black transition-colors uppercase tracking-wider underline"
                     >
                       Reset
                     </button>
@@ -156,12 +157,12 @@ export default function ProductsPageClient({ initialProducts, categories }) {
                 </div>
 
                 {/* Category Filter */}
-                <div className="mb-6 pb-6 border-b-2 border-[#F0F0F0]">
-                  <label className="text-xs font-bold text-[#102C26] block mb-3 uppercase tracking-wide">Category</label>
+                <div className="mb-8 pb-8 border-b border-pehno-black/10">
+                  <label className="text-xs font-semibold text-pehno-black block mb-3 uppercase tracking-[0.15em]">Category</label>
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="w-full border-2 border-[#F7E7CE] rounded-xl px-4 py-3 bg-[#F9F9F9] text-[#3D2817] focus:outline-none focus:border-[#248D76] focus:ring-2 focus:ring-[#248D76]/20 transition-all font-medium"
+                    className="w-full border border-pehno-black/20 px-4 py-3 bg-white text-pehno-black focus:outline-none focus:border-pehno-black transition-all"
                   >
                     <option value="all">All Categories</option>
                     {categories.map((cat) => (
@@ -174,11 +175,11 @@ export default function ProductsPageClient({ initialProducts, categories }) {
 
                 {/* Sort Filter */}
                 <div>
-                  <label className="text-xs font-bold text-[#102C26] block mb-3 uppercase tracking-wide">Sort By</label>
+                  <label className="text-xs font-semibold text-pehno-black block mb-3 uppercase tracking-[0.15em]">Sort By</label>
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="w-full border-2 border-[#F7E7CE] rounded-xl px-4 py-3 bg-[#F9F9F9] text-[#3D2817] focus:outline-none focus:border-[#248D76] focus:ring-2 focus:ring-[#248D76]/20 transition-all font-medium"
+                    className="w-full border border-pehno-black/20 px-4 py-3 bg-white text-pehno-black focus:outline-none focus:border-pehno-black transition-all"
                   >
                     <option value="newest">Newest First</option>
                     <option value="oldest">Oldest First</option>
@@ -192,13 +193,13 @@ export default function ProductsPageClient({ initialProducts, categories }) {
 
             {/* Mobile Filters */}
             {showFilters && (
-              <div className="lg:hidden fixed inset-0 z-50 bg-black/50">
-                <div className="bg-white rounded-3xl p-8 m-4 max-h-[90vh] overflow-y-auto border-2 border-[#F7E7CE] shadow-2xl">
+              <div className="lg:hidden fixed inset-0 z-50 bg-black/60" onClick={() => setShowFilters(false)}>
+                <div className="bg-pehno-ivory p-8 m-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                   <div className="flex justify-between items-center mb-8">
-                    <h3 className="text-2xl font-bold text-[#102C26]">Filters</h3>
+                    <h3 className="text-xl font-serif text-pehno-black uppercase tracking-wide">Filters</h3>
                     <button
                       onClick={() => setShowFilters(false)}
-                      className="text-[#1a4d42] hover:text-[#0d3a33]"
+                      className="text-pehno-black hover:opacity-60"
                     >
                       <X className="w-6 h-6" />
                     </button>
@@ -207,11 +208,11 @@ export default function ProductsPageClient({ initialProducts, categories }) {
                   <div className="space-y-6">
                     {/* Category */}
                     <div>
-                      <label className="text-sm font-bold text-[#102C26] block mb-3 uppercase tracking-wide">Category</label>
+                      <label className="text-xs font-semibold text-pehno-black block mb-3 uppercase tracking-[0.15em]">Category</label>
                       <select
                         value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}
-                        className="w-full border-2 border-[#F7E7CE] rounded-xl px-4 py-3 bg-[#F9F9F9] text-[#3D2817] font-medium"
+                        className="w-full border border-pehno-black/20 px-4 py-3 bg-white text-pehno-black"
                       >
                         <option value="all">All Categories</option>
                         {categories.map((cat) => (
@@ -224,11 +225,11 @@ export default function ProductsPageClient({ initialProducts, categories }) {
 
                     {/* Sort */}
                     <div>
-                      <label className="text-sm font-bold text-[#102C26] block mb-3 uppercase tracking-wide">Sort</label>
+                      <label className="text-xs font-semibold text-pehno-black block mb-3 uppercase tracking-[0.15em]">Sort</label>
                       <select
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
-                        className="w-full border-2 border-[#F7E7CE] rounded-xl px-4 py-3 bg-[#F9F9F9] text-[#3D2817] font-medium"
+                        className="w-full border border-pehno-black/20 px-4 py-3 bg-white text-pehno-black"
                       >
                         <option value="newest">Newest First</option>
                         <option value="oldest">Oldest First</option>
@@ -244,7 +245,7 @@ export default function ProductsPageClient({ initialProducts, categories }) {
                           handleClearFilters();
                           setShowFilters(false);
                         }}
-                        className="w-full text-[#1a4d42] hover:text-[#0d3a33] font-bold py-3 border-2 border-[#1a4d42] rounded-xl transition-colors uppercase tracking-wide"
+                        className="w-full text-pehno-black font-medium py-3 border border-pehno-black uppercase tracking-[0.15em] text-sm transition-colors hover:bg-pehno-black hover:text-pehno-ivory"
                       >
                         Clear All Filters
                       </button>
@@ -254,31 +255,26 @@ export default function ProductsPageClient({ initialProducts, categories }) {
               </div>
             )}
 
-            {/* Products Grid */}
+            {/* Products Grid — large, premium cards */}
             <div className="flex-1 flex flex-col items-stretch w-full">
               {filteredProducts.length === 0 ? (
-                <div className="text-center py-32 px-6 rounded-3xl bg-gradient-to-br from-[#FFF2E1] to-[#F5E6D3] border-2 border-[#D9CDB5] shadow-lg">
-                  <div className="mb-8">
-                    <div className="text-8xl mb-4 inline-block">🔍</div>
-                  </div>
-                  <h3 className="text-4xl font-bold text-[#102C26] mb-3">No Products Found</h3>
-                  <p className="text-lg text-[#6B4F2F] mb-10 font-medium">
+                <div className="text-center py-32 px-6 bg-pehno-ivory border border-pehno-black/10">
+                  <h3 className="text-3xl font-serif text-pehno-black mb-3 uppercase tracking-wide">No Products Found</h3>
+                  <p className="text-lg text-pehno-charcoal mb-10">
                     Try adjusting your filters or search terms to discover our collection
                   </p>
                   <button
                     onClick={handleClearFilters}
-                    className="bg-gradient-to-r from-[#1a4d42] to-[#0d3a33] text-white px-10 py-4 rounded-full font-bold shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 uppercase tracking-wider"
+                    className="bg-pehno-black text-pehno-ivory px-10 py-4 font-medium uppercase tracking-[0.15em] text-sm hover:opacity-90 transition-opacity"
                   >
                     Clear All Filters
                   </button>
                 </div>
               ) : (
-                <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center auto-rows-max">
+                <div className="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-14">
                   {filteredProducts.map((product) => (
-                    <div key={product.id} className="w-full max-w-xs">
-                      <div className="transition-all duration-300 hover:scale-105 cursor-pointer">
-                        <ProductCard product={product} isDeal={product.deal === 1} />
-                      </div>
+                    <div key={product.id} className="w-full">
+                      <ProductCard product={product} isDeal={product.deal === 1} size="lg" />
                     </div>
                   ))}
                 </div>

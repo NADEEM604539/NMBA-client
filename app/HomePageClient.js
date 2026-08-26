@@ -251,15 +251,13 @@ export default function HomePageClient({ initialProducts, initialReviews }) {
                     </Link>
                   </div>
 
-                  {/* Products Grid (Side 2) */}
+                  {/* Products Row (Side 2) — horizontally scrollable to fit all products */}
                   <div className="w-full lg:w-2/3">
                     {categoryProducts.length > 0 ? (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {categoryProducts.slice(0, 3).map((product) => ( // Displaying top 3 to keep layout clean
-                          <div key={product.id} className="flex justify-center">
-                            <div className="w-full max-w-xs">
-                              <ProductCard product={product} isDeal={false} />
-                            </div>
+                      <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scroll-smooth [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-pehno-black/5 [&::-webkit-scrollbar-thumb]:bg-pehno-black/20">
+                        {categoryProducts.map((product) => (
+                          <div key={product.id} className="flex-shrink-0 w-64 sm:w-72 snap-start">
+                            <ProductCard product={product} isDeal={false} />
                           </div>
                         ))}
                       </div>
