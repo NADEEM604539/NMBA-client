@@ -106,7 +106,7 @@ export default function HomePageClient({ initialProducts, initialReviews }) {
     <div className="min-h-screen font-sans bg-pehno-offwhite text-pehno-black">
 
       {/* B. Hero Section — full screen */}
-<section className="relative w-full h-[150vh] min-h-[640px] overflow-hidden">
+<section className="relative w-full h-[146vh] min-h-[640px] overflow-hidden">
         <Image
           src="/logo2.jpeg"
           alt="Model wearing PEHNO"
@@ -119,9 +119,6 @@ export default function HomePageClient({ initialProducts, initialReviews }) {
         {/* Note: I added 'pt-32' or adjusted margins if you want to push the text up, 
             but keeping it 'justify-center' will perfectly center it within the 150vh space */}
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
-          <h1 className="text-6xl md:text-8xl font-serif font-bold text-pehno-ivory tracking-[0.2em] uppercase">
-            PEHNO
-          </h1>
           <p className="mt-6 text-lg md:text-2xl text-pehno-offwhite italic font-light tracking-wide">
             wear your identity
           </p>
