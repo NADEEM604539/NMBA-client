@@ -379,7 +379,7 @@ export default function HomePageClient({ initialProducts, initialReviews }) {
           )}
 
           <div className="mt-16 pt-10 border-t border-pehno-ivory/10">
-            <span className="text-3xl font-serif text-pehno-ivory uppercase tracking-[0.3em]">PEHNO</span>
+            <span className="text-2xl font-serif text-pehno-ivory uppercase tracking-[0.3em]">PEHNO</span>
             <span className="text-1xl font-serif text-pehno-ivory uppercase tracking-[0.3em]">by Sajeel Nawaz</span>
             <p className="mt-2 text-pehno-ivory/60 italic font-light">&ldquo;wear your identity&rdquo;</p>
           </div>
