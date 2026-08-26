@@ -8,7 +8,8 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 grid md:grid-cols-4 gap-10 md:gap-8">
         {/* About Section */}
         <div>
-          <h3 className="text-2xl font-serif tracking-[0.2em] uppercase mb-3">PEHNO by Sajeel Nawaz</h3>
+          <span className="text-2xl font-serif tracking-[0.2em] uppercase mb-3">PEHNO</span>
+          <span className="text-1xl font-serif tracking-[0.2em] uppercase mb-3">by Sajeel Nawaz</span>
           <p className="text-pehno-ivory/60 text-sm leading-relaxed">
             Wear your identity. Timeless pieces, refined silhouettes, made for those who do not follow the ordinary.
           </p>
