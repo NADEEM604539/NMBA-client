@@ -106,9 +106,9 @@ export default function HomePageClient({ initialProducts, initialReviews }) {
     <div className="min-h-screen font-sans bg-pehno-offwhite text-pehno-black">
 
       {/* B. Hero Section — full screen */}
-      <section className="relative w-full h-[143vh] min-h-[640px] overflow-hidden">
+      <section className="relative w-full h-[156vh] min-h-[640px] overflow-hidden">
         <Image
-          src="/pehno2.jpeg"
+          src="/logo.jpeg"
           alt="Model wearing PEHNO"
           fill
           priority
