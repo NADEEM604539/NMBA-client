@@ -278,7 +278,7 @@ export default function HomePageClient({ initialProducts, initialReviews }) {
       </div>
 
       {/* F. The PEHNO Story */}
-      <section className="py-24 px-6 md:px-16 bg-pehno-ivory">
+      <section id="story" className="py-24 px-6 md:px-16 bg-pehno-ivory">
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
           <div className="relative w-full h-[420px] lg:h-[520px] overflow-hidden shadow-xl order-2 lg:order-1">
             <Image src="/pehno2.jpeg" alt="The PEHNO Story" fill className="object-cover" />
@@ -380,7 +380,7 @@ export default function HomePageClient({ initialProducts, initialReviews }) {
 
           <div className="mt-16 pt-10 border-t border-pehno-ivory/10">
             <p className="text-3xl font-serif text-pehno-ivory uppercase tracking-[0.3em]">PEHNO</p>
-            <p className="text-1xl font-serif text-pehno-ivory uppercase tracking-[0.3em]">by Sajeel Nawaz</p>
+            <p className="text-[10px] font-serif text-pehno-ivory/60 uppercase tracking-[0.2em] mt-1">by Sajeel Nawaz</p>
             <p className="mt-2 text-pehno-ivory/60 italic font-light">&ldquo;wear your identity&rdquo;</p>
           </div>
         </div>

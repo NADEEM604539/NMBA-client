@@ -45,7 +45,7 @@ export default function Navbar() {
           {/* Left Links (Desktop) */}
           <div className="hidden md:flex items-center gap-6 lg:gap-8 justify-self-start">
             <NavLink href="/products?category=new-arrivals" transparent={transparent}>New Arrivals</NavLink>
-            <NavLink href="/products" transparent={transparent}>Collections</NavLink>
+            <NavLink href="/#collections" transparent={transparent}>Collections</NavLink>
           </div>
 
           {/* Mobile Toggle (Left on mobile) */}
@@ -90,7 +90,7 @@ export default function Navbar() {
 
         {/* Secondary link row (desktop, centered under logo on larger screens) */}
         <div className="hidden md:flex items-center justify-center gap-8 pb-4 -mt-2">
-          <NavLink href="/about" transparent={transparent}>Our Story</NavLink>
+          <NavLink href="/#story" transparent={transparent}>Our Story</NavLink>
           <NavLink href="/chat" transparent={transparent}>Contact Us</NavLink>
           <NavLink href="/orders" transparent={transparent}>Orders</NavLink>
         </div>
@@ -101,8 +101,8 @@ export default function Navbar() {
         <div className="md:hidden w-full bg-pehno-black border-t border-pehno-charcoal/40 px-6 py-6 space-y-3">
           <MobileLink href="/" setOpen={setOpen}>Home</MobileLink>
           <MobileLink href="/products?category=new-arrivals" setOpen={setOpen}>New Arrivals</MobileLink>
-          <MobileLink href="/products" setOpen={setOpen}>Collections</MobileLink>
-          <MobileLink href="/about" setOpen={setOpen}>Our Story</MobileLink>
+          <MobileLink href="/#collections" setOpen={setOpen}>Collections</MobileLink>
+          <MobileLink href="/#story" setOpen={setOpen}>Our Story</MobileLink>
           <MobileLink href="/chat" setOpen={setOpen}>Contact Us</MobileLink>
           <MobileLink href="/orders" setOpen={setOpen}>Orders</MobileLink>
         </div>
