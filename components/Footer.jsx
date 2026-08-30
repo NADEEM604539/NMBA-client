@@ -16,10 +16,10 @@ export default function Footer() {
             Wear your identity. Timeless pieces, refined silhouettes, made for those who do not follow the ordinary.
           </p>
           <div className="mt-5 flex gap-4">
-            <Link href="https://www.facebook.com/share/1KJrchaFDp/" target="_blank" className="border border-pehno-ivory/30 text-pehno-ivory p-2.5 hover:bg-pehno-ivory hover:text-pehno-black transition-all duration-300">
+            <Link href="https://www.instagram.com/pehnobysn?utm_source=qr&igsi=MWFyazA4NnZxMXp2NA==/" target="_blank" className="border border-pehno-ivory/30 text-pehno-ivory p-2.5 hover:bg-pehno-ivory hover:text-pehno-black transition-all duration-300">
               <Facebook className="w-4 h-4" />
             </Link>
-            <Link href="https://www.instagram.com/made?igsh=MWhrdnpzazdzMGV1dQ==" target="_blank" className="border border-pehno-ivory/30 text-pehno-ivory p-2.5 hover:bg-pehno-ivory hover:text-pehno-black transition-all duration-300">
+            <Link href="https://www.instagram.com/pehnobysn?utm_source=qr&igsi=MWFyazA4NnZxMXp2NA==" target="_blank" className="border border-pehno-ivory/30 text-pehno-ivory p-2.5 hover:bg-pehno-ivory hover:text-pehno-black transition-all duration-300">
               <Instagram className="w-4 h-4" />
             </Link>
           </div>
@@ -42,11 +42,11 @@ export default function Footer() {
           <div className="space-y-3 text-sm">
             <div className="flex items-start gap-2">
               <Phone className="w-4 h-4 text-pehno-ivory/50 flex-shrink-0 mt-0.5" />
-              <a href="tel:+923336419935" className="text-pehno-ivory/60 hover:text-pehno-ivory transition">+92 333 6419935</a>
+              <a href="tel:+923268500034" className="text-pehno-ivory/60 hover:text-pehno-ivory transition">03268500034</a>
             </div>
             <div className="flex items-start gap-2">
               <Mail className="w-4 h-4 text-pehno-ivory/50 flex-shrink-0 mt-0.5" />
-              <a href="mailto:abidamansoora016@gmail.com" className="text-pehno-ivory/60 hover:text-pehno-ivory transition text-xs break-all">abidamansoora016@gmail.com</a>
+              <a href="mailto:pehnobysajeelnawaz@gmail.com" className="text-pehno-ivory/60 hover:text-pehno-ivory transition text-xs break-all">pehnobysajeelnawaz@gmail.com</a>
             </div>
             <div className="flex items-start gap-2">
               <MapPin className="w-4 h-4 text-pehno-ivory/50 flex-shrink-0 mt-0.5" />
