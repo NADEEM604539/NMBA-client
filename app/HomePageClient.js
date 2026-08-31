@@ -344,18 +344,34 @@ export default function HomePageClient({ initialProducts, initialReviews }) {
       </section>
 
       {/* H. Join The List — Footer newsletter section */}
-      <section className="py-24 px-6 md:px-16 bg-pehno-black text-center">
-        <div className="max-w-2xl mx-auto">
-          <span className="text-pehno-ivory/60 text-xs tracking-[0.4em] uppercase">Private Preview</span>
+      <section className="relative py-24 px-6 md:px-16 bg-pehno-black text-center overflow-hidden">
+        {/* Background Image & Overlay */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/pehno7.jpeg"
+            alt="PEHNO Collection Background"
+            className="w-full h-full object-cover object-center opacity-90 select-none"
+          />
+          {/* Subtle dark gradient overlay to guarantee editorial legibility across all screen sizes */}
+          <div className="absolute inset-0 bg-gradient-to-b from-pehno-black/90 via-pehno-black/75 to-pehno-black/95" />
+        </div>
+
+        {/* Foreground Content */}
+        <div className="relative z-10 max-w-2xl mx-auto">
+          <span className="text-pehno-ivory/60 text-xs tracking-[0.4em] uppercase font-medium">
+            Private Preview
+          </span>
           <h2 className="mt-4 text-4xl md:text-5xl font-serif font-light text-pehno-ivory uppercase tracking-wide">
             Be the First to Know
           </h2>
-          <p className="mt-6 text-pehno-ivory/70 text-lg font-light">
+          <p className="mt-6 text-pehno-ivory/70 text-base md:text-lg font-light leading-relaxed">
             Join the PEHNO list for first collection private previews and launch access.
           </p>
 
           {subscribed ? (
-            <p className="mt-10 text-pehno-ivory text-lg italic">Thank you — you&apos;re on the PEHNO list.</p>
+            <p className="mt-10 text-pehno-ivory text-lg italic font-light">
+              Thank you &mdash; you&apos;re on the PEHNO list.
+            </p>
           ) : (
             <form onSubmit={handleSubscribe} className="mt-10 flex items-center justify-center gap-3 max-w-md mx-auto">
               <input
@@ -364,7 +380,7 @@ export default function HomePageClient({ initialProducts, initialReviews }) {
                 placeholder="enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 bg-transparent border-b border-pehno-ivory/40 text-pehno-ivory placeholder-pehno-ivory/40 px-1 py-3 focus:outline-none focus:border-pehno-ivory transition-colors duration-300"
+                className="flex-1 bg-transparent border-b border-pehno-ivory/40 text-pehno-ivory placeholder-pehno-ivory/40 px-1 py-3 text-sm focus:outline-none focus:border-pehno-ivory transition-colors duration-300"
               />
               <button
                 type="submit"
