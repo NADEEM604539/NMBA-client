@@ -135,7 +135,7 @@ export default function HomePageClient({ initialProducts, initialReviews }) {
         </div>
       </section>
       {/* C. The Collection Banner */}
-      <section className="relative py-28 px-6 md:px-16 bg-pehno-black overflow-hidden">
+      <section className="relative py-5 px-6 md:px-16 bg-pehno-black overflow-hidden">
         <div className="absolute inset-0 opacity-30">
           <Image src="/coming_soon1.jpeg" alt="" fill className="object-cover blur-md scale-110" />
         </div>
