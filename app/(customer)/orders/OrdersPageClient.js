@@ -1,18 +1,18 @@
 "use client"
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
-
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   // Filter states
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateSort, setDateSort] = useState("desc"); // 'asc' or 'desc'
-  
+
   // Fetch orders on mount
   useEffect(() => {
     const fetchOrders = async () => {
@@ -33,10 +33,10 @@ export default function OrdersPage() {
         setLoading(false);
       }
     };
-    
+
     fetchOrders();
   }, []);
-  
+
   // Filter and sort orders
   const filteredOrders = orders
     .filter(order => statusFilter === "all" || order.status === statusFilter)
@@ -45,81 +45,90 @@ export default function OrdersPage() {
       const dateB = new Date(b.created_at);
       return dateSort === "desc" ? dateB - dateA : dateA - dateB;
     });
-  
+
   // Status options from database ENUM
   const statusOptions = ["pending", "processing", "delivered", "cancelled"];
 
   return (
-    <div>
+    <div className="min-h-screen font-sans bg-pehno-offwhite text-pehno-black">
       <Navbar />
-      <div className="min-h-screen px-6 md:px-16 py-12 bg-gradient-to-b from-[#FFF2E1] via-[#FBF0E0] to-[#F5E6D3] text-[#3D2817] relative overflow-hidden">
-        {/* Glowing background orbs */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-[#248D76]/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-24 right-12 w-96 h-96 bg-[#102C26]/10 rounded-full blur-3xl"></div>
-
-        <Link href="/" className="relative z-10 text-[#248D76] hover:text-[#1A6B5F] font-semibold transition-colors">
-          ← Back to Home
-        </Link>
-
-        <h1 className="relative z-10 text-4xl font-extrabold text-[#102C26] mt-6 mb-8">
-          My Orders
-        </h1>
+      
+      <main className="py-24 px-6 md:px-16">
+        <div className="max-w-5xl mx-auto text-center mb-16">
+          <Link 
+            href="/" 
+            className="inline-block mb-10 text-xs font-semibold text-pehno-charcoal uppercase tracking-[0.2em] hover:text-pehno-black transition-colors"
+          >
+            &larr; Return to Home
+          </Link>
+          
+          <div>
+            <span className="text-pehno-navy text-xs tracking-[0.4em] uppercase">Account</span>
+            <h1 className="mt-3 text-4xl md:text-5xl font-serif font-light text-pehno-black uppercase tracking-wide">
+              My Orders
+            </h1>
+          </div>
+        </div>
 
         {loading ? (
-          <div className="relative z-10 text-center">
-            <p className="text-[#6B4F2F]">Loading your orders...</p>
+          <div className="text-center py-20">
+            <p className="text-pehno-charcoal text-lg italic font-light tracking-wide animate-pulse">
+              Retrieving your collection...
+            </p>
           </div>
         ) : error ? (
-          <div className="relative z-10 text-center">
-            <p className="text-red-600 font-medium">{error}</p>
+          <div className="text-center py-20 border border-dashed border-pehno-black/20 max-w-4xl mx-auto">
+            <p className="text-pehno-charcoal text-lg font-light">{error}</p>
           </div>
         ) : (
-          <>
+          <div className="max-w-4xl mx-auto">
+            
             {/* Filters Section */}
-            <div className="relative z-10 max-w-4xl mx-auto mb-8 bg-white border-2 border-[#F7E7CE] rounded-2xl p-6 shadow-lg">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Status Filter */}
-                <div>
-                  <label className="text-sm font-semibold text-[#102C26] block mb-2">
-                    Filter by Status
-                  </label>
-                  <select
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                    className="w-full border-2 border-[#F7E7CE] rounded-lg px-4 py-2 bg-white text-[#3D2817] focus:outline-none focus:border-[#248D76] transition-colors font-medium"
-                  >
-                    <option value="all">All Statuses</option>
-                    {statusOptions.map(status => (
-                      <option key={status} value={status}>
-                        {status.charAt(0).toUpperCase() + status.slice(1)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+            <div className="mb-12 py-6 border-y border-pehno-black/10 flex flex-col md:flex-row gap-8 justify-between items-start md:items-center">
+              
+              {/* Status Filter */}
+              <div className="flex items-center gap-4 w-full md:w-auto">
+                <label className="text-xs font-semibold text-pehno-charcoal uppercase tracking-[0.2em] whitespace-nowrap">
+                  Status
+                </label>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="w-full md:w-48 bg-transparent border-b border-pehno-black/30 text-pehno-black focus:outline-none focus:border-pehno-black py-2 uppercase text-sm tracking-wider transition-colors cursor-pointer"
+                >
+                  <option value="all">All</option>
+                  {statusOptions.map(status => (
+                    <option key={status} value={status}>
+                      {status}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-                {/* Date Sort */}
-                <div>
-                  <label className="text-sm font-semibold text-[#102C26] block mb-2">
-                    Sort by Date
-                  </label>
-                  <select
-                    value={dateSort}
-                    onChange={(e) => setDateSort(e.target.value)}
-                    className="w-full border-2 border-[#F7E7CE] rounded-lg px-4 py-2 bg-white text-[#3D2817] focus:outline-none focus:border-[#248D76] transition-colors font-medium"
-                  >
-                    <option value="desc">Newest First</option>
-                    <option value="asc">Oldest First</option>
-                  </select>
-                </div>
+              {/* Date Sort */}
+              <div className="flex items-center gap-4 w-full md:w-auto">
+                <label className="text-xs font-semibold text-pehno-charcoal uppercase tracking-[0.2em] whitespace-nowrap">
+                  Sort
+                </label>
+                <select
+                  value={dateSort}
+                  onChange={(e) => setDateSort(e.target.value)}
+                  className="w-full md:w-48 bg-transparent border-b border-pehno-black/30 text-pehno-black focus:outline-none focus:border-pehno-black py-2 uppercase text-sm tracking-wider transition-colors cursor-pointer"
+                >
+                  <option value="desc">Newest</option>
+                  <option value="asc">Oldest</option>
+                </select>
               </div>
             </div>
 
             {/* Orders List */}
-            <div className="relative z-10 space-y-5 max-w-4xl mx-auto">
+            <div className="space-y-6">
               {filteredOrders.length === 0 ? (
-                <div className="text-center py-12 bg-white border-2 border-[#F7E7CE] rounded-2xl">
-                  <p className="text-[#6B4F2F] text-lg">
-                    {orders.length === 0 ? "You have no orders yet." : "No orders match your filters."}
+                <div className="text-center py-20 bg-white border border-pehno-black/10">
+                  <p className="text-pehno-charcoal text-lg font-light italic">
+                    {orders.length === 0 
+                      ? "Your order history is currently empty." 
+                      : "No orders match your current filters."}
                   </p>
                 </div>
               ) : (
@@ -127,48 +136,52 @@ export default function OrdersPage() {
                   <Link
                     key={order.id}
                     href={`/orders/${order.id}`}
-                    className="block bg-white border-2 border-[#F7E7CE] rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:border-[#248D76] transition-all duration-300 hover:scale-[1.01]"
+                    className="block group bg-white border border-pehno-black/10 p-8 shadow-sm hover:shadow-xl hover:border-pehno-black/30 transition-all duration-500"
                   >
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                      <div className="flex-1">
-                        <p className="font-bold text-[#102C26] text-lg">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                      
+                      {/* Order Info */}
+                      <div>
+                        <h3 className="text-2xl font-serif font-light text-pehno-black tracking-wide group-hover:text-pehno-navy transition-colors">
                           Order #{order.id}
-                        </p>
-                        <p className="text-[#6B4F2F] text-sm mt-2">
-                          Placed on:{" "}
-                          <span className="font-semibold">
+                        </h3>
+                        <p className="text-pehno-charcoal mt-2 italic font-light">
+                          Placed on{" "}
+                          <span className="not-italic font-medium text-pehno-black">
                             {new Date(order.created_at).toLocaleDateString('en-US', {
                               year: 'numeric',
-                              month: 'short',
+                              month: 'long',
                               day: 'numeric'
                             })}
                           </span>
                         </p>
-                        <p className="text-[#6B4F2F] text-sm mt-1">
-                          Status:{" "}
+                      </div>
+
+                      {/* Status & Price */}
+                      <div className="text-left md:text-right flex flex-col md:items-end justify-center">
+                        <p className="font-sans font-semibold text-pehno-black text-xl tracking-wide">
+                          Rs {Number(order.total_price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </p>
+                        
+                        <div className="mt-4">
                           <span
-                            className={`px-3 py-1 rounded-full text-xs font-semibold inline-block mt-1 ${
+                            className={`px-4 py-2 text-xs uppercase tracking-[0.2em] font-medium border ${
                               order.status === "delivered"
-                                ? "bg-[#248D76]/20 text-[#248D76]"
+                                ? "border-pehno-black text-pehno-black"
                                 : order.status === "processing"
-                                ? "bg-blue-500/20 text-blue-600"
+                                ? "border-pehno-navy text-pehno-navy"
                                 : order.status === "pending"
-                                ? "bg-[#F7A500]/20 text-[#C67F1F]"
+                                ? "border-pehno-charcoal text-pehno-charcoal"
                                 : order.status === "cancelled"
-                                ? "bg-red-500/20 text-red-600"
-                                : "bg-gray-500/20 text-gray-600"
+                                ? "border-red-900/40 text-red-900"
+                                : "border-pehno-black/20 text-pehno-charcoal"
                             }`}
                           >
-                            {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                            {order.status}
                           </span>
-                        </p>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <p className="font-extrabold text-[#248D76] text-xl">
-                          Rs {Number(order.total_price).toFixed(2)}
-                        </p>
-                        <p className="text-[#A79277] text-xs mt-2">Click to view details</p>
-                      </div>
+                      
                     </div>
                   </Link>
                 ))
@@ -176,14 +189,14 @@ export default function OrdersPage() {
             </div>
 
             {/* Results count */}
-            <div className="relative z-10 text-center mt-8">
-              <p className="text-[#6B4F2F] text-sm">
+            <div className="text-center mt-12 pt-8 border-t border-pehno-black/10">
+              <p className="text-pehno-charcoal text-xs uppercase tracking-[0.2em]">
                 Showing {filteredOrders.length} of {orders.length} {orders.length === 1 ? "order" : "orders"}
               </p>
             </div>
-          </>
+          </div>
         )}
-      </div>
+      </main>
     </div>
   );
 }
