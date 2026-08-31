@@ -350,7 +350,7 @@ export default function HomePageClient({ initialProducts, initialReviews }) {
           <img
             src="/pehno7.jpeg"
             alt="PEHNO Collection Background"
-            className="w-full h-full object-cover object-center opacity-90 select-none"
+            className="w-full h-[55vh] object-cover object-center opacity-90 select-none"
           />
           {/* Subtle dark gradient overlay to guarantee editorial legibility across all screen sizes */}
           <div className="absolute inset-0 bg-gradient-to-b from-pehno-black/90 via-pehno-black/75 to-pehno-black/95" />
