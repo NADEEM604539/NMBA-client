@@ -47,14 +47,13 @@ export async function generateMetadata({ params }) {
 export default async function ProductPage({ params }) {
   const { id } = await params;
 
-  // Fetch product and reviews on the server
   let product = null;
   let reviews = [];
 
   try {
     const [pRows] = await db.query("SELECT * FROM products WHERE id = ? AND is_deleted = 0", [id]);
     if (pRows.length > 0) {
-      product = JSON.parse(JSON.stringify(pRows[0])); // Plain object for client component
+      product = JSON.parse(JSON.stringify(pRows[0]));
     }
 
     const [rRows] = await db.query(
@@ -68,67 +67,58 @@ export default async function ProductPage({ params }) {
 
   if (!product) {
     return (
-      <div>
+      <div className="min-h-screen font-sans bg-pehno-offwhite text-pehno-black flex flex-col">
         <Navbar />
-        <div className="min-h-screen px-6 md:px-16 py-12 bg-gradient-to-b from-[#FFF2E1] via-[#FBF0E0] to-[#F5E6D3] text-[#3D2817] relative overflow-hidden">
-          {/* Glowing background orbs */}
-          <div className="absolute top-20 left-10 w-72 h-72 bg-[#1a4d42]/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-24 right-12 w-96 h-96 bg-[#102C26]/10 rounded-full blur-3xl"></div>
 
-          <div className="relative z-10 max-w-2xl mx-auto text-center py-20">
-            {/* Error Icon */}
-            <div className="mb-8">
-              <div className="inline-block w-24 h-24 bg-red-500/20 rounded-full flex items-center justify-center mb-6">
-                <span className="text-6xl">🔍</span>
-              </div>
-            </div>
+        <main className="flex-grow flex items-center justify-center py-30 px-6 md:px-16">
+          <div className="max-w-2xl w-full mx-auto text-center border border-pehno-black/10 bg-white p-8 md:p-12">
+            <span className="text-pehno-navy text-xs tracking-[0.4em] uppercase font-medium">
+              Archive Notice
+            </span>
 
-            {/* Error Title */}
-            <h1 className="text-5xl font-extrabold text-[#102C26] mb-4">
+            <h1 className="mt-3 text-3xl md:text-5xl font-serif font-light uppercase tracking-wide text-pehno-black">
               Product Not Found
             </h1>
 
-            {/* Error Message */}
-            <p className="text-xl text-[#6B4F2F] mb-8 leading-relaxed">
-              Sorry, the product you're looking for doesn't exist or has been removed from our catalog.
+            <p className="mt-6 text-pehno-charcoal text-base md:text-lg italic font-light max-w-xl mx-auto leading-relaxed">
+              The product you are attempting to view does not exist or has been removed from our current collection.
             </p>
 
-            {/* Additional Info */}
-            <p className="text-[#A79277] mb-12">
-              It might have been sold out, discontinued, or the link might be broken.
+            <p className="mt-3 text-xs uppercase tracking-[0.2em] text-pehno-charcoal/80">
+              It may be sold out, discontinued, or the address link may be broken.
             </p>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
                 href="/"
-                className="inline-block bg-[#1a4d42] text-white px-8 py-4 rounded-xl font-semibold hover:bg-[#0d3a33] transition-colors shadow-lg hover:shadow-xl"
+                className="w-full sm:w-auto border border-pehno-black text-pehno-black px-8 py-4 text-xs font-medium uppercase tracking-[0.2em] hover:bg-pehno-black hover:text-pehno-ivory transition-colors duration-300"
               >
-                ← Back to Home
+                &larr; Return to Home
               </Link>
               <Link
-                href="/products"
-                className="inline-block bg-white border-2 border-[#1a4d42] text-[#1a4d42] px-8 py-4 rounded-xl font-semibold hover:bg-[#1a4d42] hover:text-white transition-all shadow-lg hover:shadow-xl"
+                href="/#products"
+                className="w-full sm:w-auto border border-pehno-black bg-pehno-black text-pehno-ivory px-8 py-4 text-xs font-medium uppercase tracking-[0.2em] hover:bg-transparent hover:text-pehno-black transition-colors duration-300"
               >
-                Browse All Products
+                Browse Collection
               </Link>
             </div>
 
-            {/* Help Text */}
-            <div className="mt-16 p-8 bg-white border-2 border-[#F7E7CE] rounded-2xl shadow-lg">
-              <p className="text-[#102C26] font-semibold mb-3">Need Help?</p>
-              <p className="text-[#6B4F2F] mb-4">
-                If you think this is an error, please contact our support team.
+            <div className="mt-16 pt-8 border-t border-pehno-black/10 text-center">
+              <p className="text-xs uppercase tracking-[0.2em] font-semibold text-pehno-black mb-2">
+                Client Support
+              </p>
+              <p className="text-xs text-pehno-charcoal italic font-light mb-3">
+                If you require assistance or have inquiries regarding custom orders, please contact our team.
               </p>
               <a
-                href="mailto:abidamansoora016@gmail.com"
-                className="text-[#1a4d42] hover:text-[#0d3a33] font-semibold transition-colors"
+                href="mailto:pehnobysajeelnawaz@gmail.com"
+                className="text-xs uppercase tracking-[0.2em] text-pehno-navy font-semibold hover:underline"
               >
-                📧 Get Support
+                Contact Support &rarr;
               </a>
             </div>
           </div>
-        </div>
+        </main>
       </div>
     );
   }
@@ -152,7 +142,6 @@ export default async function ProductPage({ params }) {
     }
   };
 
-  // Add aggregate rating if reviews exist
   if (reviews.length > 0) {
     const totalRating = reviews.reduce((acc, r) => acc + r.rating, 0);
     const averageRating = (totalRating / reviews.length).toFixed(1);

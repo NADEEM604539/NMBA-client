@@ -17,7 +17,7 @@ export default function CartPageClient() {
       const res = await fetch("/api/cart", { cache: "no-store" });
 
       if (res.status === 401) {
-        setError("Please sign in to view your cart.");
+        setError("Please sign in to view your shopping bag.");
         setItems([]);
         return;
       }
@@ -25,7 +25,7 @@ export default function CartPageClient() {
       const data = await res.json();
       setItems(data);
     } catch (e) {
-      setError("Failed to load cart.");
+      setError("Failed to load shopping bag.");
     } finally {
       setLoading(false);
     }
@@ -35,17 +35,14 @@ export default function CartPageClient() {
     fetchCart();
   }, []);
 
-  // ✅ FAST quantity update (Optimistic UI)
   const updateQty = async (id, quantity) => {
     if (quantity < 1) return;
-    
-    // Get the item to check max quantity
-    const item = items.find(i => i.id === id);
+
+    const item = items.find((i) => i.id === id);
     if (!item) return;
-    
-    // Check against available quantity
+
     if (quantity > item.available_quantity) {
-      setError(`Only ${item.available_quantity} of "${item.name}" available in stock.`);
+      setError(`Only ${item.available_quantity} units of "${item.name}" available in stock.`);
       setTimeout(() => setError(""), 4000);
       return;
     }
@@ -53,28 +50,23 @@ export default function CartPageClient() {
     const previousItems = [...items];
     setUpdatingId(id);
 
-    // 1️⃣ Instant UI update
-    setItems(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, quantity } : item
-      )
+    setItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
     );
 
     try {
       const res = await fetch(`/api/cart/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ quantity })
+        body: JSON.stringify({ quantity }),
       });
 
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || "Update failed");
       }
-      // Sync Navbar
       refreshCartCount();
     } catch (err) {
-      // 2️⃣ Revert if API fails
       setItems(previousItems);
       setError(err.message || "Failed to update quantity.");
     } finally {
@@ -82,23 +74,20 @@ export default function CartPageClient() {
     }
   };
 
-  // ✅ FAST remove
   const removeItem = async (id) => {
     const previousItems = [...items];
     setUpdatingId(id);
 
-    // Instant remove
-    setItems(prev => prev.filter(item => item.id !== id));
+    setItems((prev) => prev.filter((item) => item.id !== id));
 
     try {
       const res = await fetch(`/api/cart/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
       });
 
       if (!res.ok) {
         throw new Error("Delete failed");
       }
-      // Sync Navbar
       refreshCartCount();
     } catch (err) {
       setItems(previousItems);
@@ -116,141 +105,177 @@ export default function CartPageClient() {
   );
 
   return (
-    <div>
+    <div className="min-h-screen font-sans bg-pehno-offwhite text-pehno-black flex flex-col">
       <Navbar />
-      <div className="min-h-screen px-6 md:px-16 py-12 bg-gradient-to-b from-[#FFF2E1] via-[#FBF0E0] to-[#F5E6D3] text-[#3D2817] relative overflow-hidden">
-        {/* Glowing background orbs */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-[#1a4d42]/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-24 right-12 w-96 h-96 bg-[#102C26]/10 rounded-full blur-3xl"></div>
 
-        <h1 className="relative z-10 text-4xl font-extrabold text-[#102C26] mb-8 text-center">
-          Your Cart
-        </h1>
+      <main className="flex-grow py-39 px-6 md:px-16 max-w-6xl mx-auto w-full">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <span className="text-pehno-navy text-xs tracking-[0.4em] uppercase font-medium">
+            Personal Selection
+          </span>
+          <h1 className="mt-2 text-3xl md:text-5xl font-serif font-light uppercase tracking-wide text-pehno-black">
+            Shopping Bag
+          </h1>
+        </div>
+
+        {error && (
+          <div className="mb-8 p-4 bg-white border border-pehno-black/20 text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-pehno-black">
+              {error}
+            </p>
+          </div>
+        )}
 
         {loading ? (
-          <p className="relative z-10 text-center text-[#6B4F2F] animate-pulse font-semibold">
-            Loading...
-          </p>
-        ) : error ? (
-          <p className="relative z-10 text-center text-red-600 font-semibold">{error}</p>
+          <div className="py-24 text-center">
+            <span className="text-xs uppercase tracking-[0.3em] font-light text-pehno-charcoal animate-pulse">
+              Retrieving bag contents...
+            </span>
+          </div>
         ) : (
-          <div className="relative z-10 mt-6 grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-
+          <div className="grid lg:grid-cols-3 gap-12 items-start">
             {/* Items List */}
-            <div className="md:col-span-2 space-y-6">
-              {items.length === 0 && (
-                <p className="text-[#6B4F2F] text-center text-lg py-12">
-                  Your cart is empty.
-                </p>
-              )}
+            <div className="lg:col-span-2 space-y-6">
+              {items.length === 0 ? (
+                <div className="bg-white border border-pehno-black/10 p-12 text-center">
+                  <p className="text-pehno-charcoal text-base italic font-light mb-6">
+                    Your shopping bag is currently empty.
+                  </p>
+                  <Link
+                    href="/"
+                    className="inline-block border border-pehno-black bg-pehno-black text-pehno-ivory px-8 py-4 text-xs font-medium uppercase tracking-[0.2em] hover:bg-transparent hover:text-pehno-black transition-colors duration-300"
+                  >
+                    Browse Collection
+                  </Link>
+                </div>
+              ) : (
+                items.map((it) => (
+                  <div
+                    key={it.id}
+                    className="bg-white border border-pehno-black/10 p-6 flex flex-col sm:flex-row items-center gap-6 shadow-sm"
+                  >
+                    <div className="relative w-28 h-32 flex-shrink-0 bg-pehno-offwhite overflow-hidden border border-pehno-black/10">
+                      <img
+                        src={it.image_url_1}
+                        alt={it.name}
+                        className="w-full h-full object-cover object-center"
+                      />
+                    </div>
 
-              {items.map((it) => (
-                <div
-                  key={it.id}
-                  className="flex flex-col sm:flex-row sm:items-center gap-4 border-2 border-[#F7E7CE] rounded-2xl p-4 bg-white shadow-lg hover:shadow-2xl hover:border-[#248D76] transition-all duration-300"
-                >
-                  <img
-                    src={it.image_url_1}
-                    alt={it.name}
-                    className="w-full sm:w-24 h-48 sm:h-24 object-cover rounded-lg border border-[#F7E7CE]"
-                  />
+                    <div className="flex-1 w-full flex flex-col justify-between">
+                      <div>
+                        <div className="flex justify-between items-start">
+                          <h2 className="font-serif text-lg font-light uppercase tracking-wider text-pehno-black">
+                            {it.name}
+                          </h2>
+                          <span className="font-medium text-sm text-pehno-black">
+                            Rs {Number(it.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </span>
+                        </div>
 
-                  <div className="flex-1">
-                    <p className="font-semibold text-[#102C26] text-lg">
-                      {it.name}
-                    </p>
+                        {/* Stock Notifications */}
+                        {it.quantity > it.available_quantity && (
+                          <p className="text-red-900 text-xs uppercase tracking-widest mt-2 font-medium">
+                            Only {it.available_quantity} available (bag contains {it.quantity})
+                          </p>
+                        )}
 
-                    {it.quantity > it.available_quantity && (
-                      <p className="text-red-600 text-sm font-semibold mt-1">
-                        ⚠️ Only {it.available_quantity} in stock (cart has {it.quantity})
-                      </p>
-                    )}
-                    
-                    {it.available_quantity > 0 && it.available_quantity <= 5 && it.quantity <= it.available_quantity && (
-                      <p className="text-orange-600 text-sm font-semibold mt-1">
-                        ⚠️ Only {it.available_quantity} left in stock
-                      </p>
-                    )}
+                        {it.available_quantity > 0 &&
+                          it.available_quantity <= 5 &&
+                          it.quantity <= it.available_quantity && (
+                            <p className="text-pehno-navy text-xs uppercase tracking-widest mt-2 font-medium">
+                              Limited availability: Only {it.available_quantity} remaining
+                            </p>
+                          )}
+                      </div>
 
-                    <div className="mt-3 flex flex-wrap items-center gap-3">
+                      {/* Controls Row */}
+                      <div className="mt-6 pt-4 border-t border-pehno-black/10 flex items-center justify-between">
+                        {/* Quantity Controls */}
+                        <div className="flex items-center border border-pehno-black/20">
+                          <button
+                            disabled={updatingId === it.id || it.quantity <= 1}
+                            className="w-9 h-9 flex items-center justify-center text-xs text-pehno-black hover:bg-pehno-offwhite transition disabled:opacity-30 disabled:hover:bg-transparent"
+                            onClick={() => updateQty(it.id, it.quantity - 1)}
+                            aria-label="Decrease quantity"
+                          >
+                            &minus;
+                          </button>
+                          <span className="w-10 text-center text-xs font-semibold text-pehno-black">
+                            {it.quantity}
+                          </span>
+                          <button
+                            disabled={
+                              updatingId === it.id ||
+                              it.quantity >= it.available_quantity
+                            }
+                            className="w-9 h-9 flex items-center justify-center text-xs text-pehno-black hover:bg-pehno-offwhite transition disabled:opacity-30 disabled:hover:bg-transparent"
+                            onClick={() => updateQty(it.id, it.quantity + 1)}
+                            aria-label="Increase quantity"
+                          >
+                            &#43;
+                          </button>
+                        </div>
 
-                      {/* Minus */}
-                      <button
-                        disabled={updatingId === it.id || it.quantity <= 1}
-                        className="px-3 py-1 border-2 border-[#248D76] rounded-full bg-white text-[#248D76] hover:bg-[#248D76] hover:text-white font-semibold transition disabled:opacity-50"
-                        onClick={() =>
-                          updateQty(it.id, it.quantity - 1)
-                        }
-                      >
-                        −
-                      </button>
-
-                      <span className="text-[#102C26] font-semibold min-w-[30px] text-center">
-                        {it.quantity}
-                      </span>
-
-                      {/* Plus */}
-                      <button
-                        disabled={updatingId === it.id || it.quantity >= it.available_quantity}
-                        className="px-3 py-1 border-2 border-[#248D76] rounded-full bg-white text-[#248D76] hover:bg-[#248D76] hover:text-white font-semibold transition disabled:opacity-50"
-                        onClick={() =>
-                          updateQty(it.id, it.quantity + 1)
-                        }
-                      >
-                        +
-                      </button>
-
-                      {/* Remove */}
-                      <button
-                        disabled={updatingId === it.id}
-                        className="ml-auto text-red-600 hover:text-red-700 font-semibold transition disabled:opacity-50"
-                        onClick={() => removeItem(it.id)}
-                      >
-                        Remove
-                      </button>
+                        {/* Remove Action */}
+                        <button
+                          disabled={updatingId === it.id}
+                          className="text-xs uppercase tracking-[0.2em] font-semibold text-pehno-charcoal hover:text-pehno-black hover:underline transition disabled:opacity-30"
+                          onClick={() => removeItem(it.id)}
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
 
-            {/* Subtotal */}
-            {items.length !== 0 && (
-              <div className="border-2 border-[#F7E7CE] rounded-2xl p-6 bg-white shadow-lg h-fit">
-                <h2 className="text-[#102C26] font-bold text-xl">
-                  Order Summary
+            {/* Order Summary Sidebar */}
+            {items.length > 0 && (
+              <div className="bg-white border border-pehno-black/10 p-8 shadow-sm">
+                <h2 className="text-xs uppercase tracking-[0.3em] font-semibold text-pehno-black pb-4 border-b border-pehno-black/10">
+                  Summary
                 </h2>
 
-                <div className="mt-4 space-y-3 border-b-2 border-[#F7E7CE] pb-4">
-                  <div className="flex justify-between text-[#6B4F2F]">
-                    <span>Subtotal</span>
-                    <span className="font-semibold">Rs {subtotal.toFixed(2)}</span>
+                <div className="mt-6 space-y-4 text-sm pb-6 border-b border-pehno-black/10">
+                  <div className="flex justify-between items-center text-pehno-charcoal">
+                    <span className="italic font-light">Subtotal</span>
+                    <span className="font-medium text-pehno-black">
+                      Rs {subtotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
                   </div>
-                  <div className="flex justify-between text-[#6B4F2F]">
-                    <span>Delivery Charges</span>
-                    <span className="font-semibold">Rs {deliveryCharges.toFixed(2)}</span>
+
+                  <div className="flex justify-between items-center text-pehno-charcoal">
+                    <span className="italic font-light">Standard Delivery</span>
+                    <span className="font-medium text-pehno-black">
+                      Rs {deliveryCharges.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
                   </div>
                 </div>
 
-                <div className="mt-4 flex justify-between items-center">
-                  <p className="text-[#102C26] font-bold text-lg">Total</p>
-                  <p className="text-2xl text-[#248D76] font-extrabold">
-                    Rs {(subtotal + deliveryCharges).toFixed(2)}
-                  </p>
+                <div className="py-6 flex justify-between items-center text-pehno-black">
+                  <span className="text-base font-serif font-light uppercase tracking-wider">
+                    Total
+                  </span>
+                  <span className="text-xl font-semibold">
+                    Rs {(subtotal + deliveryCharges).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </span>
                 </div>
 
                 <Link
                   href="/checkout"
-                  className="mt-6 inline-block w-full text-center bg-gradient-to-r from-[#1a4d42] to-[#0d3a33] text-white px-5 py-3 rounded-xl font-semibold shadow-lg hover:scale-105 hover:shadow-2xl transition-transform duration-300"
+                  className="mt-2 block w-full text-center border border-pehno-black bg-pehno-black text-pehno-ivory py-4 text-xs font-medium uppercase tracking-[0.2em] hover:bg-transparent hover:text-pehno-black transition-colors duration-300"
                 >
                   Proceed to Checkout
                 </Link>
               </div>
             )}
-
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 }

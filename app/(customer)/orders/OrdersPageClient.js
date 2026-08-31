@@ -53,7 +53,7 @@ export default function OrdersPage() {
     <div className="min-h-screen font-sans bg-pehno-offwhite text-pehno-black">
       <Navbar />
       
-      <main className="py-24 px-6 md:px-16">
+      <main className="py-39 px-6 md:px-16">
         <div className="max-w-5xl mx-auto text-center mb-16">
           <Link 
             href="/" 

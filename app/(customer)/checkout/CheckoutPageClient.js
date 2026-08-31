@@ -19,7 +19,7 @@ export default function CheckoutPageClient() {
     (async () => {
       const res = await fetch("/api/cart", { cache: "no-store" });
       if (res.status === 401) {
-        setError("Please sign in to checkout.");
+        setError("Please sign in to proceed with checkout.");
         setItems([]);
         return;
       }
@@ -28,9 +28,11 @@ export default function CheckoutPageClient() {
   }, []);
 
   const total = items.reduce(
-    (s, it) => (s + Number(it.price) * it.quantity),
+    (s, it) => s + Number(it.price) * it.quantity,
     0
   );
+
+  const deliveryCharges = items.length > 0 ? 200 : 0;
 
   const placeOrder = async () => {
     setPlacing(true);
@@ -44,10 +46,9 @@ export default function CheckoutPageClient() {
       }),
     });
     setPlacing(false);
-    setShowConfirm(false); // Close modal
+    setShowConfirm(false);
     if (res.ok) {
       await res.json();
-      // Sync Navbar (Cart is cleared after order)
       refreshCartCount();
       window.location.href = "/orders";
     } else {
@@ -57,159 +58,224 @@ export default function CheckoutPageClient() {
   };
 
   return (
-    <div>
-      <Navbar/>
-      <div className="min-h-screen px-6 md:px-16 py-12 relative overflow-hidden bg-gradient-to-b from-[#FFF2E1] via-[#FBF0E0] to-[#F5E6D3] text-[#3D2817]">
-        {/* Glowing background orbs */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-[#1a4d42]/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-24 right-12 w-96 h-96 bg-[#102C26]/10 rounded-full blur-3xl"></div>
+    <div className="min-h-screen font-sans bg-pehno-offwhite text-pehno-black flex flex-col">
+      <Navbar />
 
-        {/* Page Heading */}
-        <h1 className="relative z-10 text-5xl font-extrabold text-[#102C26] mb-12 text-center tracking-wide">
-          Checkout
-        </h1>
+      <main className="flex-grow py-39 px-6 md:px-16 max-w-6xl mx-auto w-full">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <span className="text-pehno-navy text-xs tracking-[0.4em] uppercase font-medium">
+            Order Processing
+          </span>
+          <h1 className="mt-2 text-3xl md:text-5xl font-serif font-light uppercase tracking-wide text-pehno-black">
+            Checkout
+          </h1>
+        </div>
 
-        <div className="relative z-10 mt-6 grid md:grid-cols-3 gap-10 max-w-6xl mx-auto">
-          {/* Items & Form */}
-          <div className="md:col-span-2 space-y-6">
-            {items.map((it) => (
-              <div
-                key={it.id}
-                className="flex items-center gap-4 bg-white border-2 border-[#F7E7CE] rounded-2xl p-5 shadow-lg hover:shadow-xl hover:border-[#248D76] transition-all duration-300"
-              >
-                <img
-                  src={it.image_url_1}
-                  alt={it.name}
-                  className="w-24 h-24 object-cover rounded-lg border border-[#F7E7CE]"
-                />
-                <div className="flex-1">
-                  <p className="font-semibold text-[#102C26] text-lg">
-                    {it.name}
+        {error && (
+          <div className="mb-8 p-4 bg-white border border-pehno-black/20 text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-pehno-black">
+              {error}
+            </p>
+          </div>
+        )}
+
+        <div className="grid lg:grid-cols-3 gap-12 items-start">
+          {/* Main Details Section */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Selected Items Breakdown */}
+            <div className="bg-white border border-pehno-black/10 p-6 md:p-8">
+              <h2 className="text-xs uppercase tracking-[0.3em] font-semibold text-pehno-black pb-4 border-b border-pehno-black/10 mb-6">
+                Selection Details
+              </h2>
+
+              <div className="space-y-4">
+                {items.length === 0 ? (
+                  <p className="text-pehno-charcoal text-sm italic font-light">
+                    No items selected for checkout.
                   </p>
-                  <p className="text-[#6B4F2F] mt-1">Qty: {it.quantity}</p>
-                </div>
-                <div className="text-[#248D76] font-bold text-lg">
-                  Rs {(Number(it.price) * it.quantity).toFixed(2)}
-                </div>
+                ) : (
+                  items.map((it) => (
+                    <div
+                      key={it.id}
+                      className="flex items-center gap-6 py-3 border-b border-pehno-black/5 last:border-b-0"
+                    >
+                      <div className="w-16 h-20 bg-pehno-offwhite flex-shrink-0 border border-pehno-black/10 overflow-hidden">
+                        <img
+                          src={it.image_url_1}
+                          alt={it.name}
+                          className="w-full h-full object-cover object-center"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-serif text-base font-light uppercase tracking-wider text-pehno-black">
+                          {it.name}
+                        </p>
+                        <p className="text-xs text-pehno-charcoal italic font-light mt-1">
+                          Quantity: {it.quantity}
+                        </p>
+                      </div>
+                      <div className="text-sm font-medium text-pehno-black">
+                        Rs {(Number(it.price) * it.quantity).toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
-            ))}
+            </div>
 
-            {/* Customer Details */}
-            <div className="grid gap-4 mt-8 bg-white border-2 border-[#F7E7CE] rounded-2xl p-6 shadow-lg">
-              <label className="text-[#102C26] font-semibold text-lg">
-                Phone
-              </label>
-              <input
-                suppressHydrationWarning
-                value={contact}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (value.length <= 12) {
-                    setContact(value);
-                  }
-                }}
-                type="number"
-                placeholder="Enter phone number"
-                className="px-5 py-3 rounded-lg border-2 border-[#F7E7CE] bg-white text-[#3D2817] focus:outline-none focus:border-[#248D76] transition-colors shadow-sm placeholder-[#A79277]"
-              />
-              <label className="text-[#102C26] font-semibold text-lg">
-                Address
-              </label>
-              <textarea
-                suppressHydrationWarning
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                rows={3}
-                placeholder="Delivery address"
-                className="px-5 py-3 rounded-lg border-2 border-[#F7E7CE] bg-white text-[#3D2817] focus:outline-none focus:border-[#248D76] transition-colors shadow-sm placeholder-[#A79277]"
-              />
+            {/* Customer Contact & Delivery Form */}
+            <div className="bg-white border border-pehno-black/10 p-6 md:p-8 space-y-6">
+              <h2 className="text-xs uppercase tracking-[0.3em] font-semibold text-pehno-black pb-4 border-b border-pehno-black/10">
+                Delivery Information
+              </h2>
 
-              <label className="text-[#102C26] font-semibold text-lg">
-                Payment Method
-              </label>
-              <select
-                suppressHydrationWarning
-                value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-                className="px-5 py-3 rounded-lg border-2 border-[#F7E7CE] bg-white text-[#3D2817] focus:outline-none focus:border-[#248D76] transition-colors shadow-sm font-medium"
-              >
-                <option value="cod">Cash on Delivery</option>
-              </select>
+              <div className="space-y-2">
+                <label className="block text-xs uppercase tracking-[0.2em] font-semibold text-pehno-black">
+                  Contact Phone
+                </label>
+                <input
+                  suppressHydrationWarning
+                  value={contact}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value.length <= 12) setContact(value);
+                  }}
+                  type="number"
+                  placeholder="e.g. 03001234567"
+                  className="w-full px-4 py-3 bg-pehno-offwhite border border-pehno-black/20 text-sm text-pehno-black focus:outline-none focus:border-pehno-black placeholder:text-pehno-charcoal/50 transition-colors"
+                />
+              </div>
 
-              {error && <p className="text-red-600 font-semibold">{error}</p>}
+              <div className="space-y-2">
+                <label className="block text-xs uppercase tracking-[0.2em] font-semibold text-pehno-black">
+                  Shipping Address
+                </label>
+                <textarea
+                  suppressHydrationWarning
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  rows={3}
+                  placeholder="Complete residential or delivery location details"
+                  className="w-full px-4 py-3 bg-pehno-offwhite border border-pehno-black/20 text-sm text-pehno-black focus:outline-none focus:border-pehno-black placeholder:text-pehno-charcoal/50 transition-colors resize-none"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-xs uppercase tracking-[0.2em] font-semibold text-pehno-black">
+                  Payment Method
+                </label>
+                <select
+                  suppressHydrationWarning
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  className="w-full px-4 py-3 bg-pehno-offwhite border border-pehno-black/20 text-sm text-pehno-black focus:outline-none focus:border-pehno-black transition-colors"
+                >
+                  <option value="cod">Cash on Delivery (COD)</option>
+                </select>
+              </div>
             </div>
           </div>
 
-          {/* Order Summary */}
-          <div className="border-2 border-[#F7E7CE] rounded-2xl p-8 bg-white shadow-xl flex flex-col gap-6 h-fit">
-            <h2 className="text-[#102C26] font-bold text-xl">Order Summary</h2>
-            
-            <div className="space-y-3 pb-6 border-b-2 border-[#F7E7CE]">
-              <div className="flex justify-between text-[#6B4F2F]">
-                <span>Subtotal</span>
-                <span className="font-semibold">Rs {total.toFixed(2)}</span>
+          {/* Order Summary Sidebar */}
+          <div className="bg-white border border-pehno-black/10 p-8 shadow-sm">
+            <h2 className="text-xs uppercase tracking-[0.3em] font-semibold text-pehno-black pb-4 border-b border-pehno-black/10">
+              Summary
+            </h2>
+
+            <div className="mt-6 space-y-4 text-sm pb-6 border-b border-pehno-black/10">
+              <div className="flex justify-between items-center text-pehno-charcoal">
+                <span className="italic font-light">Subtotal</span>
+                <span className="font-medium text-pehno-black">
+                  Rs {total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </span>
               </div>
-              <div className="flex justify-between text-[#6B4F2F]">
-                <span>Delivery Charges</span>
-                <span className="font-semibold">Rs 200</span>
+
+              <div className="flex justify-between items-center text-pehno-charcoal">
+                <span className="italic font-light">Standard Delivery</span>
+                <span className="font-medium text-pehno-black">
+                  Rs {deliveryCharges.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </span>
               </div>
             </div>
 
-            <div className="flex justify-between items-center">
-              <p className="text-[#102C26] font-bold text-lg">Total</p>
-              <p className="text-2xl text-[#248D76] font-extrabold">
-                Rs {(total + 200).toFixed(2)}
-              </p>
+            <div className="py-6 flex justify-between items-center text-pehno-black">
+              <span className="text-base font-serif font-light uppercase tracking-wider">
+                Total
+              </span>
+              <span className="text-xl font-semibold">
+                Rs {(total + deliveryCharges).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </span>
             </div>
 
             <button
               disabled={placing || !contact || !address || items.length === 0}
               onClick={() => setShowConfirm(true)}
-              className="w-full bg-gradient-to-r from-[#1a4d42] to-[#0d3a33] text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:scale-105 hover:shadow-xl transition-transform duration-300 disabled:opacity-60"
+              className="w-full border border-pehno-black bg-pehno-black text-pehno-ivory py-4 text-xs font-medium uppercase tracking-[0.2em] hover:bg-transparent hover:text-pehno-black transition-colors duration-300 disabled:opacity-40 disabled:hover:bg-pehno-black disabled:hover:text-pehno-ivory"
             >
-              {placing ? "Placing..." : "Place Order"}
+              {placing ? "Processing..." : "Place Order"}
             </button>
 
-            {/* Confirmation Modal */}
-            {showConfirm && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-6">
-                <div className="bg-white border-2 border-[#F7E7CE] rounded-2xl p-8 max-w-md w-full shadow-2xl animate-in fade-in zoom-in duration-300">
-                  <h2 className="text-2xl font-bold text-[#102C26] mb-4">Confirm Your Order</h2>
-                  <p className="text-[#6B4F2F] mb-6 leading-relaxed">
-                    Are you sure you want to place this order? Please double-check your phone number and delivery address.
-                  </p>
-                  <div className="space-y-3 text-sm text-[#3D2817] mb-8 p-4 bg-[#FFF2E1] rounded-lg border border-[#F7E7CE]">
-                    <p><span className="text-[#248D76] font-semibold">Phone:</span> {contact}</p>
-                    <p><span className="text-[#248D76] font-semibold">Address:</span> {address}</p>
-                    <p><span className="text-[#248D76] font-semibold">Total:</span> Rs {(total + 200).toFixed(2)}</p>
-                  </div>
-                  <div className="flex gap-4">
-                    <button
-                      onClick={() => setShowConfirm(false)}
-                      className="flex-1 px-6 py-3 rounded-lg border-2 border-[#F7E7CE] text-[#248D76] font-semibold hover:bg-[#FFF2E1] transition-colors"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={placeOrder}
-                      disabled={placing}
-                      className="flex-1 px-6 py-3 rounded-lg bg-gradient-to-r from-[#1a4d42] to-[#0d3a33] text-white font-semibold shadow-lg hover:scale-105 transition-transform disabled:opacity-50"
-                    >
-                      {placing ? "Confirming..." : "Confirm Order"}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-            <Link
-              href="/cart"
-              className="mt-2 block text-center text-[#248D76] hover:text-[#1A6B5F] font-semibold transition-colors"
-            >
-              Back to cart
-            </Link>
+            <div className="mt-6 text-center">
+              <Link
+                href="/cart"
+                className="text-xs uppercase tracking-[0.2em] font-semibold text-pehno-charcoal hover:text-pehno-black hover:underline transition-colors"
+              >
+                &larr; Return to Shopping Bag
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
+
+        {/* Modal Window */}
+        {showConfirm && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-pehno-black/60 backdrop-blur-sm p-6">
+            <div className="bg-white border border-pehno-black/10 p-8 max-w-md w-full shadow-2xl">
+              <span className="text-pehno-navy text-xs tracking-[0.3em] uppercase font-medium">
+                Verification
+              </span>
+              <h3 className="mt-1 text-2xl font-serif font-light uppercase tracking-wide text-pehno-black mb-4">
+                Confirm Order
+              </h3>
+              
+              <p className="text-pehno-charcoal text-xs italic font-light leading-relaxed mb-6">
+                Please verify your dispatch details before finalizing your acquisition.
+              </p>
+
+              <div className="space-y-3 text-xs text-pehno-black mb-8 p-4 bg-pehno-offwhite border border-pehno-black/10">
+                <p>
+                  <span className="uppercase tracking-wider font-semibold text-pehno-navy">Contact:</span> {contact}
+                </p>
+                <p>
+                  <span className="uppercase tracking-wider font-semibold text-pehno-navy">Address:</span> {address}
+                </p>
+                <p>
+                  <span className="uppercase tracking-wider font-semibold text-pehno-navy">Total Payable:</span> Rs {(total + deliveryCharges).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </p>
+              </div>
+
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setShowConfirm(false)}
+                  className="flex-1 border border-pehno-black/30 py-3 text-xs font-medium uppercase tracking-[0.2em] text-pehno-black hover:bg-pehno-offwhite transition-colors"
+                >
+                  Edit Details
+                </button>
+                <button
+                  onClick={placeOrder}
+                  disabled={placing}
+                  className="flex-1 border border-pehno-black bg-pehno-black text-pehno-ivory py-3 text-xs font-medium uppercase tracking-[0.2em] hover:bg-transparent hover:text-pehno-black transition-colors disabled:opacity-50"
+                >
+                  {placing ? "Confirming..." : "Confirm"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
     </div>
   );
 }

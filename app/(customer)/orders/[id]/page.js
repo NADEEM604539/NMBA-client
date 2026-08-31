@@ -26,7 +26,7 @@ export default async function OrderDetails({ params }) {
       <div className="min-h-screen font-sans bg-pehno-offwhite text-pehno-black">
         <Navbar />
 
-        <main className="py-24 px-6 md:px-16 max-w-4xl mx-auto">
+        <main className="py-39 px-6 md:px-16 max-w-4xl mx-auto">
           <div className="text-center py-16 bg-white border border-pehno-black/10 p-8 md:p-12">
             <span className="text-pehno-navy text-xs tracking-[0.4em] uppercase">
               {isUnauthorized ? "Authentication Error" : "System Message"}
@@ -63,7 +63,7 @@ export default async function OrderDetails({ params }) {
                 Our support team is available to help resolve any issues with your account or orders.
               </p>
               <a
-                href="mailto:abidamansoora016@gmail.com"
+                href="mailto:pehnobysajeelnawaz@gmail.com"
                 className="text-xs uppercase tracking-[0.2em] text-pehno-navy font-semibold hover:underline"
               >
                 Contact Support &rarr;

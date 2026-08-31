@@ -15,18 +15,18 @@ export default function ChatPageClient() {
     try {
       const res = await fetch("/api/chats", { cache: "no-store" });
       if (res.status === 401) {
-        setError("Please sign in to use chat.");
+        setError("Please sign in to access client advisory services.");
         setMessages([]);
         return;
       }
       const data = await res.json();
       setMessages(data);
     } catch (e) {
-      setError("Failed to load chat.");
+      setError("Unable to retrieve conversation archives.");
     }
   };
 
-  // Scroll chat box to bottom only on user message
+  // Scroll chat box to bottom
   const scrollToBottom = () => {
     setTimeout(() => {
       chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -52,65 +52,92 @@ export default function ChatPageClient() {
       return;
     }
     setText("");
-    fetchMessages();
+    await fetchMessages();
+    scrollToBottom();
   };
 
   return (
-    <div>
-      <Navbar/>
-      <div className="min-h-screen px-6 md:px-16 py-12 bg-gradient-to-b from-[#FFF2E1] via-[#FBF0E0] to-[#F5E6D3] text-[#3D2817] flex flex-col relative overflow-hidden">
-        {/* Glowing background orbs */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-[#248D76]/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-24 right-12 w-96 h-96 bg-[#102C26]/10 rounded-full blur-3xl"></div>
+    <div className="min-h-screen font-sans bg-pehno-offwhite text-pehno-black flex flex-col">
+      <Navbar />
 
-        <h1 className="relative z-10 text-4xl font-extrabold text-[#102C26] mb-8 text-center">
-          Chat With Expert
-        </h1>
+      <main className="flex-grow py-40 px-6 md:px-16 max-w-4xl mx-auto w-full flex flex-col">
+        {/* Header Section */}
+        <div className="text-center mb-8">
+          <span className="text-pehno-navy text-xs tracking-[0.4em] uppercase font-medium">
+            Client Advisory
+          </span>
+          <h1 className="mt-2 text-3xl md:text-5xl font-serif font-light uppercase tracking-wide text-pehno-black">
+            Consult With An Expert
+          </h1>
+        </div>
 
-        {/* Chat Box */}
-        <div className="relative z-10 flex-1 border-2 border-[#F7E7CE] rounded-3xl p-6 bg-white shadow-2xl overflow-y-auto h-[60vh] flex flex-col gap-4">
-          {error && <p className="text-red-600 mb-2 font-semibold">{error}</p>}
+        {error && (
+          <div className="mb-6 p-4 bg-white border border-pehno-black/20 text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-pehno-black">
+              {error}
+            </p>
+          </div>
+        )}
 
-          {messages.map((m) => (
-            <div
-              key={m.id}
-              className={`max-w-[75%] px-4 py-3 rounded-2xl shadow-md ${
-                m.is_self
-                  ? "bg-gradient-to-br from-[#248D76] to-[#1A6B5F] text-white ml-auto rounded-tr-none"
-                  : "bg-[#F0F9F7] text-[#102C26] border-2 border-[#F7E7CE] rounded-tl-none"
-              }`}
-            >
-              <div className={`text-xs opacity-70 mb-1 ${m.is_self ? "text-green-100" : "text-[#6B4F2F]"}`}>
-                {mounted ? new Date(m.created_at).toLocaleDateString() : ""}
+        {/* Chat Box Frame */}
+        <div className="flex-1 border border-pehno-black/10 bg-white p-6 shadow-sm flex flex-col justify-between min-h-[550px] max-h-[650px]">
+          {/* Scrollable Message List */}
+          <div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
+            {messages.length === 0 && !error && (
+              <div className="h-full flex items-center justify-center">
+                <p className="text-pehno-charcoal text-xs italic font-light tracking-wide text-center">
+                  Your conversation with our house stylist will appear here.
+                </p>
               </div>
-              <div className="text-sm font-medium">{m.message}</div>
-            </div>
-          ))}
-          <div ref={chatEndRef} />
-        </div>
+            )}
 
-        {/* Input Box */}
-        <div className="relative z-10 mt-6 flex gap-3">
-          <input
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                send();
-              }
-            }}
-            placeholder="Type your message..."
-            className="flex-1 px-4 py-3 rounded-2xl border-2 border-[#F7E7CE] bg-white text-[#3D2817] focus:outline-none focus:border-[#248D76] transition-colors shadow-md placeholder-[#A79277]"
-          />
-          <button
-            onClick={send}
-            className="bg-gradient-to-r from-[#248D76] to-[#1A6B5F] text-white px-6 py-3 rounded-2xl font-semibold shadow-lg hover:scale-105 hover:shadow-2xl transition-transform duration-300"
-          >
-            Send
-          </button>
+            {messages.map((m) => (
+              <div
+                key={m.id}
+                className={`max-w-[80%] sm:max-w-[70%] p-4 ${
+                  m.is_self
+                    ? "ml-auto bg-pehno-black text-pehno-ivory"
+                    : "mr-auto bg-pehno-offwhite border border-pehno-black/10 text-pehno-black"
+                }`}
+              >
+                <div
+                  className={`text-[10px] uppercase tracking-[0.2em] mb-1 font-medium ${
+                    m.is_self ? "text-pehno-ivory/60" : "text-pehno-navy"
+                  }`}
+                >
+                  {mounted ? new Date(m.created_at).toLocaleDateString() : ""}
+                </div>
+                <div className="text-xs font-light leading-relaxed tracking-wide">
+                  {m.message}
+                </div>
+              </div>
+            ))}
+            <div ref={chatEndRef} />
+          </div>
+
+          {/* Input Bar */}
+          <div className="mt-6 pt-4 border-t border-pehno-black/10 flex gap-3">
+            <input
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  send();
+                }
+              }}
+              placeholder="Inquire regarding sizing, styling, or orders..."
+              className="flex-1 px-4 py-3 bg-pehno-offwhite border border-pehno-black/20 text-xs text-pehno-black placeholder:text-pehno-charcoal/50 focus:outline-none focus:border-pehno-black transition-colors"
+            />
+            <button
+              onClick={send}
+              className="border border-pehno-black bg-pehno-black text-pehno-ivory px-8 py-3 text-xs font-medium uppercase tracking-[0.2em] hover:bg-transparent hover:text-pehno-black transition-colors duration-300 flex-shrink-0"
+            >
+              Send
+            </button>
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
