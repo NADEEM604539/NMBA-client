@@ -27,7 +27,7 @@ export default function ProductPageClient({ initialProduct, initialReviews }) {
   return (
     <div className="bg-pehno-offwhite min-h-screen">
       {/* Hero Background */}
-      <div className="bg-pehno-black pt-32 pb-16">
+      <div className="bg-pehno-black pt-40 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-xs uppercase tracking-[0.15em] mb-10">

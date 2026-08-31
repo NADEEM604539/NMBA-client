@@ -170,6 +170,7 @@ export default async function ProductPage({ params }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <Navbar/>
       <ProductPageClient initialProduct={product} initialReviews={reviews} />
     </>
   );
